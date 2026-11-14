@@ -210,3 +210,108 @@ def question(etab, texte_question):
     texte, mode = ia.repondre_question(texte_question, sources, etab["nom"])
     return {"texte": texte, "mode": mode,
             "sources": [{"n": k, "date": s["date"][:10], "note": s["note"], "texte": s["texte"][:400]} for k, s in enumerate(sources, 1)]}
+
+
+# ----------------------------------------------------------------- Stratège : actions proposées et mesure de leur effet
+PROPOSITIONS = {
+    "Chambre et literie": ("Contrôler chaque chambre avant l'arrivée du client (literie, serviettes, équipements)", "Gouvernante"),
+    "Propreté": ("Mettre en place une check-list de propreté signée à chaque ménage", "Gouvernante"),
+    "Personnel et service": ("Briefing accueil de 10 minutes chaque matin et un responsable désigné par service", "Direction"),
+    "Petit-déjeuner et restauration": ("Revoir le réassort du buffet et la qualité des produits chauds", "Chef de cuisine"),
+    "Arrivée et départ": ("Préparer les arrivées à l'avance pour réduire l'attente à la réception", "Réception"),
+    "Bruit": ("Attribuer en priorité les chambres calmes et vérifier l'isolation des chambres signalées", "Réception"),
+    "Prix et rapport qualité-prix": ("Clarifier ce qui est inclus dans le prix au moment de la réservation", "Commercial"),
+    "Wi-Fi et équipements": ("Faire une tournée de maintenance hebdomadaire des équipements signalés", "Maintenance"),
+    "Piscine, spa et animations": ("Planifier l'entretien de la piscine et des transats", "Maintenance"),
+}
+
+
+def propositions(etab_id):
+    t = tableau(etab_id)
+    if t.get("vide"):
+        return []
+    deja = {a["sujet"] for a in base.lire("SELECT sujet FROM actions WHERE etablissement_id=? AND statut!='termine'", (etab_id,))}
+    res = []
+    for s in sorted(t["sujets"], key=lambda s: -(s["recents"] * 2 + s["total"] / 10)):
+        if s["sujet"] in PROPOSITIONS and s["sujet"] not in deja and s["total"] >= 3:
+            titre, resp = PROPOSITIONS[s["sujet"]]
+            res.append({"sujet": s["sujet"], "titre": titre, "responsable": resp,
+                        "pourquoi": f"{s['total']} phrases négatives au total, dont {s['recents']} ces 4 dernières semaines.",
+                        "objectif": f"Moins de plaintes « {s['sujet'].lower()} » dans les 30 jours"})
+        if len(res) == 3:
+            break
+    return res
+
+
+def mesurer_action(action):
+    """Compare les avis qui citent le sujet : 30 jours avant / 30 jours après la fin de l'action."""
+    if action["statut"] != "termine" or not action["termine_le"] or not action["sujet"]:
+        return None
+    fin = pd.Timestamp(action["termine_le"])
+    d = _df(action["etablissement_id"])
+    if d.empty:
+        return None
+    avant = d[(d["date"] < fin) & (d["date"] >= fin - pd.Timedelta(days=30))]
+    apres = d[(d["date"] >= fin) & (d["date"] < fin + pd.Timedelta(days=30))]
+    compte = lambda x: int(x["neg"].apply(lambda l: action["sujet"] in l).sum())
+    jours = (pd.Timestamp.now() - fin).days
+    return {"plaintes_avant": compte(avant), "plaintes_apres": compte(apres), "avis_avant": int(len(avant)), "avis_apres": int(len(apres)),
+            "complet": jours >= 30, "jours": max(0, min(30, jours))}
+
+
+# ----------------------------------------------------------------- Prévision : risque de baisse sur 4 semaines
+def prevision(etab_id):
+    import numpy as np
+
+    d = _df(etab_id)
+    if d.empty:
+        return None
+    g = d[d["source"] == "google"].copy()
+    g["wk"] = g["date"].dt.to_period("W-SUN").dt.start_time
+    s = g.groupby("wk").agg(note=("note", "mean"), n=("note", "size"), ko=("note", lambda x: (x <= 2).mean())).tail(12)
+    s = s[s["n"] >= 3]
+    if len(s) < 6:
+        return {"suffisant": False}
+    x = np.arange(len(s))
+    pente, origine = np.polyfit(x, s["note"].values, 1, w=np.sqrt(s["n"].values))
+    pente_ko = np.polyfit(x, s["ko"].values, 1)[0]
+    actuelle = float(np.average(s["note"].tail(4), weights=s["n"].tail(4)))
+    prevue = float(min(5, max(1, actuelle + pente * 4)))
+    ecart = float(np.std(s["note"].values - (origine + pente * x)))
+    risque = "élevé" if prevue < actuelle - 0.15 or pente_ko > 0.01 else "moyen" if pente < -0.01 else "faible"
+    return {"suffisant": True, "actuelle": round(actuelle, 2), "prevue": round(prevue, 2), "pente_semaine": round(float(pente), 3),
+            "marge": round(ecart, 2), "risque": risque, "semaines": int(len(s)),
+            "historique": [{"du": i.strftime("%d/%m"), "note": round(float(v), 2)} for i, v in s["note"].items()]}
+
+
+# ----------------------------------------------------------------- Résumé de la semaine
+def resume_semaine(etab):
+    t = tableau(etab["id"])
+    if t.get("vide"):
+        return "Aucun avis pour l'instant : connectez votre fiche ou partagez l'enquête.", "local"
+    p = prevision(etab["id"]) or {}
+    k = t["kpi"]
+    faits = [f"Note moyenne : {k['note']} sur 5 ({k['avis']} avis). Note des 30 derniers jours : {k['note30']} (avant : {k['note30_avant']}).",
+             f"Délai de réponse médian : {k['delai_h']} h. Avis avec réponse : {k['taux_reponse']} %.",
+             f"Avis récents sans réponse : {t['a_repondre']}. Clients mécontents à rappeler : {t['cas_ouverts']}."]
+    faits += [f"Sujet « {s['sujet']} » : {s['recents']} plaintes ces 4 semaines contre {s['avant']} avant." for s in t["sujets"][:4]]
+    if p.get("suffisant"):
+        faits.append(f"Prévision dans 4 semaines : {p['prevue']} (actuellement {p['actuelle']}), risque {p['risque']}.")
+    if ia.en_ligne():
+        consigne = (f"Tu es le conseiller expérience client de {etab['nom']}. À partir des faits fournis UNIQUEMENT, écris le résumé "
+                    "du lundi pour le gérant, en français simple : 1) ce qui va bien, 2) ce qui se dégrade, 3) les 3 actions de la semaine, "
+                    "numérotées. 150 mots maximum, pas de jargon, aucun chiffre inventé. " + ia.GARDE)
+        try:
+            return ia.claude(consigne, "<faits>\n" + "\n".join(faits) + "\n</faits>", 500), "en ligne"
+        except Exception as e:  # noqa: BLE001
+            base.journaliser("ia_bascule", None, type(e).__name__)
+    return "Les chiffres de la semaine :\n" + "\n".join("• " + f for f in faits), "local"
+
+
+# ----------------------------------------------------------------- Fidélisation
+def fidelisation(etab):
+    contents = base.lire("SELECT id, note, commentaire, contact, date FROM enquetes WHERE etablissement_id=? AND note>=4 AND consentement=1 "
+                         "AND contact!='' ORDER BY date DESC LIMIT 100", (etab["id"],))
+    message = (f"Bonjour, merci encore pour votre visite chez {etab['nom']} ! Nous serions heureux de vous accueillir à nouveau : "
+               "présentez ce message lors de votre prochaine visite pour profiter d'une attention de notre part.")
+    return {"clients": contents, "message": message}

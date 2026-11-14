@@ -392,7 +392,45 @@ async def api_actions(request):
     e = S.etablissement_du(request.state.u["id"], request.path_params["eid"])
     if not e:
         return S.refus("Établissement introuvable.", 404)
-    return rep({"actions": base.lire("SELECT * FROM actions WHERE etablissement_id=? ORDER BY cree_le DESC", (e["id"],))})
+    actions = base.lire("SELECT * FROM actions WHERE etablissement_id=? ORDER BY cree_le DESC", (e["id"],))
+    for x in actions:
+        x["mesure"] = agents.mesurer_action(x)
+    return rep({"actions": actions})
+
+
+@route
+@S.protege()
+async def api_strategie(request):
+    e = S.etablissement_du(request.state.u["id"], request.path_params["eid"])
+    if not e:
+        return S.refus("Établissement introuvable.", 404)
+    return rep({"propositions": agents.propositions(e["id"]), "prevision": agents.prevision(e["id"])})
+
+
+@route
+@S.protege(ecriture=True)
+async def api_resume(request):
+    uid = request.state.u["id"]
+    e = S.etablissement_du(uid, request.path_params["eid"])
+    if not e:
+        return S.refus("Établissement introuvable.", 404)
+    if not S.limite(f"ia:{uid}", 12, 60):
+        return S.trop("Trop de demandes d'un coup. Patientez une minute.")
+    ok, _, plafond = S.quota_ia(uid)
+    if not ok:
+        return S.refus(f"Vous avez utilisé vos {plafond} actions IA du mois.", 402)
+    texte, mode = agents.resume_semaine(e)
+    ia.compter(uid, "resume", mode)
+    return rep({"texte": texte, "mode": mode})
+
+
+@route
+@S.protege()
+async def api_fidelisation(request):
+    e = S.etablissement_du(request.state.u["id"], request.path_params["eid"])
+    if not e:
+        return S.refus("Établissement introuvable.", 404)
+    return rep(agents.fidelisation(e))
 
 
 @route
@@ -530,6 +568,9 @@ app = Starlette(
         Route(f"/api/etablissements/{eid}/rattrapage", api_cas),
         Route(f"/api/etablissements/{eid}/question", api_question, methods=["POST"]),
         Route(f"/api/etablissements/{eid}/actions", api_actions),
+        Route(f"/api/etablissements/{eid}/strategie", api_strategie),
+        Route(f"/api/etablissements/{eid}/resume", api_resume, methods=["POST"]),
+        Route(f"/api/etablissements/{eid}/fidelisation", api_fidelisation),
         Route(f"/api/etablissements/{eid}/actions", api_action_creer, methods=["POST"]),
         Route("/api/avis/{aid:str}/brouillon", api_brouillon, methods=["POST"]),
         Route("/api/avis/{aid:str}/publier", api_publier, methods=["POST"]),

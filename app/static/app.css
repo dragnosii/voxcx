@@ -194,3 +194,5 @@ table.liste td{padding:10px;border-bottom:1px solid var(--trait)}
   #courbe{height:280px}
 }
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition-duration:.01ms!important}}
+
+.gros-chiffre{font:600 40px/1.1 var(--f-titre)}

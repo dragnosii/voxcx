@@ -34,6 +34,8 @@ const I = {
   actions: '<path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>',
   abonnement: '<rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/>',
   admin: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',
+  strategie: '<path d="M3 3v18h18"/><path d="m7 15 4-4 3 3 5-6"/>',
+  fidele: '<path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8z"/>',
   etab: '<path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6"/>',
 };
 const ico = (n) => `<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${I[n]}</svg>`;
@@ -122,6 +124,7 @@ function animerTitre(el) {
 /* ------------------------------------------------------------ coquille connectée */
 const VUES = {
   matin: { nom: "Ce matin", ico: "matin", f: vueMatin },
+  strategie: { nom: "Semaine et prévisions", ico: "strategie", f: vueStrategie },
   avis: { nom: "Répondre aux avis", ico: "avis", f: vueAvis },
   rattrapage: { nom: "Clients à rappeler", ico: "rattrapage", f: vueRattrapage },
   collecte: { nom: "Collecte et fiche", ico: "collecte", f: vueCollecte },
@@ -343,6 +346,55 @@ async function brouillon() {
 }
 
 /* ------------------------------------------------------------ Rattrapage */
+function mesure(m) {
+  if (!m) return '<span class="discret">Après la fin de l\'action</span>';
+  const evol = m.plaintes_apres - m.plaintes_avant;
+  return `<span class="num">${m.plaintes_avant} → ${m.plaintes_apres} plaintes</span><br><span class="discret">${m.complet ? (evol < 0 ? "Amélioration" : evol > 0 ? "Pas d'amélioration" : "Stable") + " sur 30 jours" : "Mesure en cours (" + m.jours + " / 30 jours)"}</span>`;
+}
+
+async function blocFidelisation() {
+  const z = $("#z-fidele"); if (!z) return;
+  const d = await api(`/api/etablissements/${etat.eid}/fidelisation`).catch(() => null); if (!d) return;
+  z.innerHTML = `<div class="carte" style="display:grid;gap:14px;margin-top:22px"><div class="rangee">${ico("fidele")}<h2>Clients contents à fidéliser</h2></div>
+    <p class="second">Ces clients ont donné 4 ou 5 et accepté d'être recontactés. Un message de remerciement les fait revenir.</p>
+    <label class="champ" for="msg-fidele">Message prêt à envoyer</label><textarea id="msg-fidele" rows="3">${esc(d.message)}</textarea>
+    <button class="btn" data-a="copier" data-cible="msg-fidele" style="justify-self:start">Copier le message</button>
+    ${d.clients.length ? `<div class="tableau-defile"><table class="liste"><thead><tr><th>Date</th><th>Note</th><th>Contact</th><th>Commentaire</th></tr></thead><tbody>${d.clients.map((c) => `<tr><td>${date(c.date)}</td><td>${etoiles(c.note)}</td><td>${esc(c.contact)}</td><td class="discret">${esc(c.commentaire)}</td></tr>`).join("")}</tbody></table></div>`
+      : '<p class="discret">Pas encore de client content avec un contact. Ils apparaîtront ici après les premières enquêtes.</p>'}</div>`;
+}
+
+async function vueStrategie() {
+  const c = $("#contenu");
+  c.innerHTML = `<div class="entete"><div><h1>Semaine et prévisions</h1><p>Le résumé de votre semaine, la note attendue dans un mois et les actions à lancer en priorité.</p></div></div>
+  <div class="grille2">
+    <div class="carte" style="display:grid;gap:14px"><div class="rangee" style="justify-content:space-between"><h2>Résumé du lundi</h2><span class="etiq" id="mode-resume">Pas encore préparé</span></div>
+      <p class="reponse-ia" id="resume">Cliquez pour obtenir le résumé de la semaine, écrit pour être lu en une minute.</p>
+      <button class="btn plein" data-a="resume" style="justify-self:start">Préparer le résumé</button></div>
+    <div class="carte" id="z-prev" style="display:grid;gap:12px"><h2>Note attendue dans 4 semaines</h2><p class="chargement">Calcul…</p></div>
+  </div>
+  <div class="carte" style="margin-top:18px;display:grid;gap:14px"><h2>Actions proposées</h2><p class="second">Choisies d'après les sujets de plainte qui reviennent le plus, surtout ces 4 dernières semaines.</p><div id="z-prop"><p class="chargement">Chargement…</p></div></div>`;
+  const d = await api(`/api/etablissements/${etat.eid}/strategie`).catch((e) => ({ erreur: e.message }));
+  if (d.erreur) { $("#z-prop").innerHTML = `<p class="erreur">${esc(d.erreur)}</p>`; return; }
+  etat.cache.prop = d.propositions;
+  $("#z-prop").innerHTML = d.propositions.length ? `<ol class="decisions">${d.propositions.map((p, i) => `<li class="decision"><span class="bande"></span><div><h3>${esc(p.titre)}</h3><p>${esc(p.sujet)} : ${esc(p.pourquoi)} Responsable proposé : ${esc(p.responsable)}.</p></div>
+      <button class="btn plein" data-a="creer-prop" data-i="${i}">Lancer cette action</button></li>`).join("")}</ol>` : '<div class="vide"><p>Aucune action à proposer : les sujets de plainte sont déjà suivis ou trop rares.</p></div>';
+  const p = d.prevision, z = $("#z-prev");
+  if (!p || !p.suffisant) { z.innerHTML = `<h2>Note attendue dans 4 semaines</h2><p class="second">Il faut au moins 6 semaines avec des avis pour faire une prévision fiable.</p>`; return; }
+  const cls = { "élevé": "ko", moyen: "", faible: "ok" }[p.risque];
+  z.innerHTML = `<div class="rangee" style="justify-content:space-between"><h2>Note attendue dans 4 semaines</h2><span class="etiq ${cls}">Risque de baisse ${esc(p.risque)}</span></div>
+    <div class="rangee" style="gap:28px"><div><span class="discret">Aujourd'hui</span><div class="num gros-chiffre">${fr(p.actuelle)}</div></div>
+      <div><span class="discret">Dans 4 semaines</span><div class="num gros-chiffre ${p.prevue < p.actuelle ? "baisse" : "hausse"}">${fr(p.prevue)}</div></div></div>
+    <svg id="prev-svg" viewBox="0 0 400 120" preserveAspectRatio="none" style="width:100%;height:120px" role="img" aria-label="Notes des dernières semaines et tendance prévue"></svg>
+    <p class="discret">Tendance calculée sur les ${p.semaines} dernières semaines (marge ± ${fr(p.marge)}). C'est une tendance, pas une certitude : elle sert à réagir avant que la note ne baisse.</p>`;
+  const svg = $("#prev-svg"), NS = "http://www.w3.org/2000/svg", H = p.historique, n = H.length + 4;
+  const notes = H.map((h) => h.note).concat([p.prevue]), mn = Math.min(...notes) - 0.1, mx = Math.max(...notes) + 0.1;
+  const x = (i) => 10 + 380 * i / (n - 1), y = (v) => 10 + 100 * (1 - (v - mn) / (mx - mn));
+  const el = (t, a) => { const e = document.createElementNS(NS, t); for (const k in a) e.setAttribute(k, a[k]); svg.appendChild(e); return e; };
+  el("path", { d: "M" + H.map((h, i) => `${x(i)},${y(h.note)}`).join(" L"), fill: "none", stroke: "#C6FF3D", "stroke-width": 2 });
+  el("path", { d: `M${x(H.length - 1)},${y(p.actuelle)} L${x(n - 1)},${y(p.prevue)}`, fill: "none", stroke: "#A9B4BF", "stroke-width": 2, "stroke-dasharray": "5 5" });
+  el("circle", { cx: x(n - 1), cy: y(p.prevue), r: 5, fill: "#07090C", stroke: p.prevue < p.actuelle ? "#F2496A" : "#16A897", "stroke-width": 2.5 });
+}
+
 async function vueRattrapage() {
   const c = $("#contenu");
   c.innerHTML = `<div class="entete"><div><h1>Clients à rappeler</h1><p>Ces clients ont donné une note de 3 ou moins dans votre enquête. Rappelez-les aujourd'hui : un client rattrapé publie rarement un avis négatif.</p></div></div><div id="z-cas"><p class="chargement">Chargement…</p></div>`;
@@ -351,7 +403,7 @@ async function vueRattrapage() {
   const q = d.enquetes;
   const resume = `<div class="chiffres" style="margin:0 0 22px"><div><b class="num">${q.n || 0}</b><span>Enquêtes reçues</span></div><div><b class="num">${q.m ? fr(q.m, 1) : "–"}</b><span>Note moyenne</span></div>
     <div><b class="num">${q.c || 0}</b><span>Clients contents invités sur Google</span></div><div><b class="num">${d.cas.filter((x) => x.statut === "rattrape").length}</b><span>Clients rattrapés</span></div></div>`;
-  if (!d.cas.length) { $("#z-cas").innerHTML = resume + `<div class="vide"><h2>Aucun client à rappeler</h2><p>Partagez votre enquête (QR code ou WhatsApp) : les mécontents apparaîtront ici.</p><button class="btn plein" data-a="vue" data-v="collecte">Partager l'enquête</button></div>`; return; }
+  if (!d.cas.length) { $("#z-cas").innerHTML = resume + `<div class="vide"><h2>Aucun client à rappeler</h2><p>Partagez votre enquête (QR code ou WhatsApp) : les mécontents apparaîtront ici.</p><button class="btn plein" data-a="vue" data-v="collecte">Partager l'enquête</button></div><div id="z-fidele"></div>`; blocFidelisation(); return; }
   const libelle = { ouvert: "À rappeler", rappele: "Rappelé", rattrape: "Rattrapé", perdu: "Perdu" };
   $("#z-cas").innerHTML = resume + `<div style="display:grid;gap:14px">${d.cas.map((x) => `
     <div class="carte cas">
@@ -365,7 +417,8 @@ async function vueRattrapage() {
           ${x.statut !== "perdu" && x.statut !== "rattrape" ? `<button class="btn" data-a="cas" data-id="${esc(x.id)}" data-s="perdu">Injoignable</button>` : ""}</div>
       </div>
       <div><h3 style="margin-bottom:8px">Que lui dire</h3><div class="conseil">${esc(x.suggestion)}</div></div>
-    </div>`).join("")}</div>`;
+    </div>`).join("")}</div><div id="z-fidele"></div>`;
+  blocFidelisation();
 }
 
 /* ------------------------------------------------------------ Collecte */
@@ -446,8 +499,8 @@ async function vueActions() {
   <div id="z-actions" style="margin-top:18px"><p class="chargement">Chargement…</p></div>`;
   const d = await api(`/api/etablissements/${etat.eid}/actions`).catch(() => ({ actions: [] }));
   const col = { a_lancer: "À lancer", en_cours: "En cours", termine: "Terminée" }, suiv = { a_lancer: ["en_cours", "Démarrer"], en_cours: ["termine", "Marquer comme terminée"] };
-  $("#z-actions").innerHTML = d.actions.length ? `<div class="tableau-defile"><table class="liste"><thead><tr><th>Action</th><th>Sujet</th><th>Responsable</th><th>Objectif</th><th>État</th><th></th></tr></thead><tbody>
-    ${d.actions.map((a) => `<tr><td>${esc(a.titre)}</td><td>${esc(a.sujet)}</td><td>${esc(a.responsable)}</td><td>${esc(a.objectif)}</td><td><span class="etiq ${a.statut === "termine" ? "ok" : ""}">${col[a.statut]}</span></td>
+  $("#z-actions").innerHTML = d.actions.length ? `<div class="tableau-defile"><table class="liste"><thead><tr><th>Action</th><th>Sujet</th><th>Responsable</th><th>Objectif</th><th>État</th><th>Effet mesuré</th><th></th></tr></thead><tbody>
+    ${d.actions.map((a) => `<tr><td>${esc(a.titre)}</td><td>${esc(a.sujet)}</td><td>${esc(a.responsable)}</td><td>${esc(a.objectif)}</td><td><span class="etiq ${a.statut === "termine" ? "ok" : ""}">${col[a.statut]}</span></td><td>${mesure(a.mesure)}</td>
     <td>${suiv[a.statut] ? `<button class="btn" data-a="action" data-id="${esc(a.id)}" data-s="${suiv[a.statut][0]}">${suiv[a.statut][1]}</button>` : ""}</td></tr>`).join("")}</tbody></table></div>`
     : `<div class="vide"><p>Aucune action pour l'instant. Partez d'un sujet de plainte du tableau « Ce matin ».</p></div>`;
 }
@@ -515,6 +568,10 @@ document.addEventListener("click", async (ev) => {
       try { await navigator.clipboard.writeText(v); toast("Copié"); } catch (e) { const r = document.createRange(); r.selectNodeContents(el); getSelection().removeAllRanges(); getSelection().addRange(r); toast("Sélectionné : Ctrl + C pour copier"); } return; }
     if (a === "suggestion") { $("#q").value = b.dataset.q; poser(b.dataset.q); return; }
     if (a === "action") { await api(`/api/actions/${b.dataset.id}/statut`, { statut: b.dataset.s }); toast("Action mise à jour"); vueActions(); return; }
+    if (a === "resume") { b.disabled = true; b.textContent = "Rédaction…"; const d = await api(`/api/etablissements/${etat.eid}/resume`, {});
+      $("#resume").textContent = d.texte; $("#mode-resume").textContent = d.mode === "en ligne" ? "Écrit par l'IA" : "Mode local"; b.disabled = false; b.textContent = "Refaire le résumé"; return; }
+    if (a === "creer-prop") { const p = etat.cache.prop[+b.dataset.i]; await api(`/api/etablissements/${etat.eid}/actions`, { titre: p.titre, sujet: p.sujet, responsable: p.responsable, objectif: p.objectif });
+      toast("Action lancée : suivez-la dans Actions"); b.disabled = true; b.textContent = "Action lancée"; return; }
     if (a === "niveau") { await api("/api/admin/niveau-ia", { niveau: b.dataset.n }); toast("Niveau d'IA changé"); await charger(); return; }
     if (a === "payer") { b.disabled = true; await api("/api/abonnement/payer", { offre: b.dataset.o }); toast("Abonnement activé (démonstration)"); await charger(); return; }
     if (a === "supprimer-etab") {

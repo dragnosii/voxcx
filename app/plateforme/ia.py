@@ -88,7 +88,20 @@ def corps_requete(consigne, contenu, max_tokens):
     return corps
 
 
+def sans_markdown(texte):
+    """Le texte est affiché tel quel : on retire les marques Markdown (gras, titres) que certains modèles ajoutent."""
+    import re
+
+    texte = texte.replace("**", "").replace("__", "")
+    texte = re.sub(r"^[ \t]{0,3}#{1,6}[ \t]*", "", texte, flags=re.M)
+    return re.sub(r"\n{3,}", "\n\n", texte).strip()
+
+
 def claude(consigne, contenu, max_tokens=600):
+    return sans_markdown(_appel(consigne + " Écris en texte brut, sans Markdown (pas d'astérisques ni de #).", contenu, max_tokens))
+
+
+def _appel(consigne, contenu, max_tokens=600):
     """Appel au modèle en ligne choisi. Lève une exception en cas d'échec (l'appelant bascule en local)."""
     if cle_openrouter():
         import httpx

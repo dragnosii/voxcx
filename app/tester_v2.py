@@ -119,6 +119,24 @@ ok("Question à l'assistant avec sources", r.status_code == 200 and len(r.json()
 # Actions
 ok("Création d'action", A.post(f"/api/etablissements/{eA}/actions", json={"titre": "Vérifier les serviettes", "sujet": "Propreté"}, headers=hA).status_code == 200)
 
+# Stratège, prévision, résumé, fidélisation
+st = A.get(f"/api/etablissements/{eA}/strategie").json()
+ok("Actions proposées par le Stratège", isinstance(st.get("propositions"), list) and len(st["propositions"]) > 0, str(st)[:200])
+ok("Prévision à 4 semaines", st.get("prevision") and st["prevision"].get("suffisant") and 1 <= st["prevision"]["prevue"] <= 5, str(st.get("prevision"))[:200])
+ok("IDOR stratégie refusé", B.get(f"/api/etablissements/{eA}/strategie").status_code == 404)
+r = A.post(f"/api/etablissements/{eA}/resume", json={}, headers=hA)
+ok("Résumé de la semaine", r.status_code == 200 and "Note moyenne" in r.json().get("texte", ""), r.text[:200])
+serveur.S._compteurs.clear()  # la limite anti-abus a été atteinte plus haut, on repart de zéro
+X3 = client()
+X3.post(f"/api/public/enquete/{jeton}", json={"note": 5, "commentaire": "Superbe séjour", "consentement": True, "contact": "client@exemple.ma"})
+fid = A.get(f"/api/etablissements/{eA}/fidelisation").json()
+ok("Fidélisation : client content avec contact", any(c["contact"] == "client@exemple.ma" for c in fid["clients"]))
+ok("IDOR fidélisation refusé", B.get(f"/api/etablissements/{eA}/fidelisation").status_code == 404)
+act = A.get(f"/api/etablissements/{eA}/actions").json()["actions"][0]
+A.post(f"/api/actions/{act['id']}/statut", json={"statut": "termine"}, headers=hA)
+act = A.get(f"/api/etablissements/{eA}/actions").json()["actions"][0]
+ok("Mesure avant / après d'une action terminée", act["mesure"] is not None and "plaintes_avant" in act["mesure"], str(act.get("mesure")))
+
 # Abonnement (démonstration) : le montant vient du serveur
 r = A.post("/api/abonnement/payer", json={"offre": "pro", "montant_centimes": 1}, headers=hA)
 paiement = base_mod.lire("SELECT montant_centimes FROM paiements", un=True)
