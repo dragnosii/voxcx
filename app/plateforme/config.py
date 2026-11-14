@@ -52,6 +52,23 @@ def cle_ia():
     return os.environ.get("ANTHROPIC_API_KEY", "").strip()
 
 
+def cle_openrouter():
+    _charger_env()
+    return os.environ.get("OPENROUTER_API_KEY", "").strip()
+
+
+# Trois niveaux d'IA (prix OpenRouter relevés le 14/11/2026, en dollars par million de jetons entrée / sortie).
+# Les identifiants peuvent être changés dans .env sans toucher au code.
+NIVEAUX_IA = {
+    "economique": {"nom": "Économique", "modele": os.environ.get("MODELE_ECONOMIQUE", "deepseek/deepseek-v4.1-flash"),
+                   "prix": "0,05 / 0,20 $", "par_reponse": "≈ 0,0001 $"},
+    "equilibre": {"nom": "Équilibré", "modele": os.environ.get("MODELE_EQUILIBRE", "anthropic/claude-haiku-5.5"),
+                  "prix": "0,10 / 0,50 $", "par_reponse": "≈ 0,0002 $"},
+    "puissant": {"nom": "Puissant", "modele": os.environ.get("MODELE_PUISSANT", "anthropic/claude-sonnet-5.5"),
+                 "prix": "2 / 10 $", "par_reponse": "≈ 0,004 $"},
+}
+
+
 # Offres : montants en centimes de dirham, calculés côté serveur uniquement.
 OFFRES = {
     "essai": {"nom": "Essai gratuit", "prix": 0, "jours": 14, "etablissements": 1, "ia_mois": 30,

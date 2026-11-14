@@ -63,6 +63,12 @@ ok("Admin avec compte simple refusé", A.get("/api/admin/vue").status_code == 40
 ok("Rôle non modifiable par l'API", client().post("/api/inscription", json={"nom": "Zed", "email": "z@test.ma", "mot": "motdepasse-solide-42", "role": "admin"}).status_code in (200, 429)
    and base_mod.lire("SELECT role FROM utilisateurs WHERE email='z@test.ma'", un=True) in (None, {"role": "gerant"}))
 
+ok("Choix du modèle IA refusé à un gérant", B.post("/api/admin/niveau-ia", json={"niveau": "puissant"}, headers=hB).status_code == 403)
+base_mod.ecrire("UPDATE utilisateurs SET role='admin' WHERE email='b@test.ma'")
+ok("Choix du modèle IA par l'admin", B.post("/api/admin/niveau-ia", json={"niveau": "economique"}, headers=hB).status_code == 200
+   and B.get("/api/admin/vue").json()["niveau"] == "economique")
+ok("Niveau inconnu refusé", B.post("/api/admin/niveau-ia", json={"niveau": "gratuit-illimite"}, headers=hB).status_code == 400)
+
 # Import de l'historique (fiche de démonstration)
 fiches = A.get("/api/fiches-demo").json()["fiches"]
 ok("Fiches de démonstration disponibles", len(fiches) > 0)

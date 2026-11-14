@@ -21,7 +21,7 @@ import transformers  # noqa: F401,E402
 
 from plateforme import agents, base, ia  # noqa: E402
 from plateforme import securite as S  # noqa: E402
-from plateforme.config import MODE_DEMO_PAIEMENT, OFFRES, PORT, PRODUCTION, SECRET, STATIC  # noqa: E402
+from plateforme.config import MODE_DEMO_PAIEMENT, NIVEAUX_IA, OFFRES, PORT, PRODUCTION, SECRET, STATIC  # noqa: E402
 
 TYPES = ["Hôtel", "Riad", "Restaurant", "Café", "Autre"]
 MAX_CORPS = 64 * 1024
@@ -180,7 +180,7 @@ async def api_moi(request):
     etabs = base.lire("SELECT id, nom, ville, type, lien_avis, jeton_enquete, source_connectee, import_statut, import_fait, import_total "
                       "FROM etablissements WHERE proprietaire_id=? ORDER BY cree_le", (u["id"],))
     return rep({"connecte": True, "utilisateur": {"nom": u["nom"], "email": u["email"], "role": u["role"]},
-                "csrf": request.session.get("csrf"), "ia_en_ligne": ia.en_ligne(),
+                "csrf": request.session.get("csrf"), "ia_en_ligne": ia.en_ligne(), "modele_ia": ia.modele_actuel(),
                 "abonnement": None if not a else {"offre": a["offre"], "nom": a["detail"]["nom"], "statut": a["statut"],
                                                   "fin": a["fin"][:10], "actif": a["actif"], "max_etab": a["detail"]["etablissements"]},
                 "quota": {"utilise": utilise, "plafond": plafond}, "etablissements": etabs, "types": TYPES})
@@ -468,7 +468,20 @@ async def api_admin(request):
                        "(SELECT COUNT(*) FROM enquetes) enquetes, (SELECT COUNT(*) FROM cas_rattrapage) cas", un=True)
     journal = base.lire("SELECT date, evenement, detail FROM journal ORDER BY id DESC LIMIT 60")
     return rep({"comptes": comptes, "revenus": revenus, "conso": conso, "totaux": totaux, "journal": journal,
-                "ia_en_ligne": ia.en_ligne(), "paiement_demo": MODE_DEMO_PAIEMENT})
+                "ia_en_ligne": ia.en_ligne(), "paiement_demo": MODE_DEMO_PAIEMENT,
+                "niveaux": NIVEAUX_IA, "niveau": ia.niveau_actuel(), "modele": ia.modele_actuel(),
+                "openrouter": bool(ia.cle_openrouter())})
+
+
+@route
+@S.protege(admin=True, ecriture=True)
+async def api_admin_niveau(request):
+    niveau = (await corps(request)).get("niveau")
+    if niveau not in NIVEAUX_IA:
+        return mauvais("Niveau inconnu.")
+    base.ecrire("INSERT INTO reglages (cle, valeur) VALUES ('niveau_ia', ?) ON CONFLICT(cle) DO UPDATE SET valeur=excluded.valeur", (niveau,))
+    base.journaliser("niveau_ia", request.state.u["id"], NIVEAUX_IA[niveau]["modele"])
+    return rep({"ok": True})
 
 
 # ----------------------------------------------------------------- en-têtes de sécurité
@@ -485,7 +498,7 @@ class EnTetes(BaseHTTPMiddleware):
         r.headers["Referrer-Policy"] = "same-origin"
         r.headers["Permissions-Policy"] = "camera=(), microphone=(), geolocation=()"
         r.headers["X-Frame-Options"] = "DENY"
-        if request.url.path.startswith("/api/"):
+        if request.url.path.startswith("/api/") or request.url.path == "/" or request.url.path.startswith("/e/"):
             r.headers["Cache-Control"] = "no-store"
         else:
             r.headers["Cache-Control"] = "no-cache"
@@ -525,6 +538,7 @@ app = Starlette(
         Route("/api/actions/{xid:str}/statut", api_action_statut, methods=["POST"]),
         Route("/api/abonnement/payer", api_payer, methods=["POST"]),
         Route("/api/admin/vue", api_admin),
+        Route("/api/admin/niveau-ia", api_admin_niveau, methods=["POST"]),
         Mount("/static", StaticFiles(directory=STATIC), name="static"),
     ],
     middleware=[

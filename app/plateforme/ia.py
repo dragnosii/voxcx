@@ -9,7 +9,7 @@ import threading
 import numpy as np
 
 from plateforme import base
-from plateforme.config import MODELE_CLAUDE, MODELE_EMBEDDINGS, MODELE_SENTIMENT, cle_ia
+from plateforme.config import MODELE_CLAUDE, MODELE_EMBEDDINGS, MODELE_SENTIMENT, NIVEAUX_IA, cle_ia, cle_openrouter
 from voxcx.nlp import decouper_phrases, detecter_aspects
 
 _verrou = threading.Lock()
@@ -56,12 +56,42 @@ def analyser(textes):
     return res
 
 
-# ----------------------------------------------------------------- appel à Claude (serveur seulement)
+# ----------------------------------------------------------------- IA en ligne (serveur seulement)
+# OpenRouter en priorité (3 niveaux au choix de l'admin), sinon clé Anthropic directe, sinon mode local.
+def niveau_actuel():
+    r = base.lire("SELECT valeur FROM reglages WHERE cle='niveau_ia'", un=True)
+    return r["valeur"] if r and r["valeur"] in NIVEAUX_IA else "equilibre"
+
+
+def modele_actuel():
+    if cle_openrouter():
+        return NIVEAUX_IA[niveau_actuel()]["modele"]
+    if cle_ia():
+        return MODELE_CLAUDE
+    return None
+
+
 def en_ligne():
-    return bool(cle_ia())
+    return bool(cle_openrouter() or cle_ia())
 
 
 def claude(consigne, contenu, max_tokens=600):
+    """Appel au modèle en ligne choisi. Lève une exception en cas d'échec (l'appelant bascule en local)."""
+    if cle_openrouter():
+        import httpx
+
+        r = httpx.post(
+            "https://openrouter.ai/api/v1/chat/completions",
+            headers={"Authorization": f"Bearer {cle_openrouter()}", "X-Title": "VoxCX"},
+            json={"model": modele_actuel(), "max_tokens": max_tokens,
+                  "messages": [{"role": "system", "content": consigne}, {"role": "user", "content": contenu}]},
+            timeout=60,
+        )
+        r.raise_for_status()
+        texte = (r.json().get("choices") or [{}])[0].get("message", {}).get("content") or ""
+        if not texte.strip():
+            raise ValueError("réponse vide")
+        return texte.strip()
     import anthropic
 
     client = anthropic.Anthropic(api_key=cle_ia())
@@ -71,6 +101,8 @@ def claude(consigne, contenu, max_tokens=600):
 
 
 def compter(uid, type_, mode):
+    if mode == "en ligne":
+        mode = modele_actuel() or mode
     base.ecrire("INSERT INTO conso_ia (utilisateur_id, type, mode, date) VALUES (?,?,?,?)", (uid, type_, mode, base.maintenant()))
 
 

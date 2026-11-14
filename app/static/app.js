@@ -148,7 +148,7 @@ function rendre() {
       <nav aria-label="Menu principal">${nav}</nav>
       <div class="bas">
         <span class="discret">${esc(m.utilisateur.nom)} · ${esc(m.abonnement?.nom || "")}</span>
-        <span class="discret">IA : ${m.ia_en_ligne ? "en ligne (Claude)" : "mode local gratuit"}</span>
+        <span class="discret">IA : ${m.ia_en_ligne ? "en ligne (" + esc(m.modele_ia || "") + ")" : "mode local gratuit"}</span>
         <button class="btn" data-a="deconnexion">Se déconnecter</button>
       </div>
     </aside>
@@ -336,7 +336,7 @@ async function brouillon() {
   try {
     const d = await api(`/api/avis/${a.id}/brouillon`, { ton: etat.cache.ton || "formel" });
     a.brouillon = d.texte; a.statut = "brouillon"; listeAvis(); lecteur();
-    $("#mode-ia").textContent = d.mode === "en ligne" ? "Rédigé par l'IA (Claude)" : "Réponse type (mode local)";
+    $("#mode-ia").textContent = d.mode === "en ligne" ? "Rédigé par l'IA en ligne" : "Réponse type (mode local)";
     const ta = $("#reponse");
     if (!reduit) { let i = 0; ta.value = ""; ta.classList.add("tape"); const it = setInterval(() => { i += 5; ta.value = d.texte.slice(0, i); if (i >= d.texte.length) { clearInterval(it); ta.classList.remove("tape"); } }, 12); }
   } catch (e) { toast(e.message); b.disabled = false; b.textContent = "Préparer la réponse"; }
@@ -427,7 +427,7 @@ async function poser(q) {
   const z = $("#z-reponse"); z.innerHTML = `<p class="chargement">Recherche dans vos avis…</p>`;
   try {
     const d = await api(`/api/etablissements/${etat.eid}/question`, { question: q });
-    z.innerHTML = `<div class="carte" style="display:grid;gap:14px"><div class="rangee" style="justify-content:space-between"><h2>Réponse</h2><span class="etiq ${d.mode === "en ligne" ? "neon" : ""}">${d.mode === "en ligne" ? "IA en ligne (Claude)" : "Mode local"}</span></div>
+    z.innerHTML = `<div class="carte" style="display:grid;gap:14px"><div class="rangee" style="justify-content:space-between"><h2>Réponse</h2><span class="etiq ${d.mode === "en ligne" ? "neon" : ""}">${d.mode === "en ligne" ? "IA en ligne" : "Mode local"}</span></div>
       <p class="reponse-ia">${esc(d.texte)}</p>
       ${d.sources.length ? `<h3>Les avis utilisés</h3><ol class="sources">${d.sources.map((s) => `<li><b>[${s.n}]</b> ${etoiles(s.note)} <span class="discret">${date(s.date)}</span><br>${esc(s.texte)}</li>`).join("")}</ol>` : ""}</div>`;
   } catch (e) { z.innerHTML = `<div class="vide">${esc(e.message)}</div>`; }
@@ -469,7 +469,14 @@ async function vueAdmin() {
   const d = await api("/api/admin/vue").catch((e) => ({ erreur: e.message }));
   if (d.erreur) { c.innerHTML = `<div class="vide">${esc(d.erreur)}</div>`; return; }
   const rev = d.revenus.reduce((s, r) => s + (r.total || 0), 0), t = d.totaux;
-  c.innerHTML = `<div class="entete"><div><h1>Administration</h1><p>Vue de la plateforme. IA : ${d.ia_en_ligne ? "en ligne (Claude)" : "mode local (aucune clé)"}. Paiement : ${d.paiement_demo ? "démonstration" : "réel"}.</p></div></div>
+  c.innerHTML = `<div class="entete"><div><h1>Administration</h1><p>Vue de la plateforme. Paiement : ${d.paiement_demo ? "démonstration" : "réel"}.</p></div></div>
+  <div class="carte" style="margin-bottom:22px;display:grid;gap:14px"><div class="rangee" style="justify-content:space-between"><h2>Modèle d'IA</h2>
+    <span class="etiq ${d.ia_en_ligne ? "ok" : ""}">${d.openrouter ? "Clé OpenRouter détectée" : d.ia_en_ligne ? "Clé Anthropic détectée" : "Aucune clé : mode local gratuit"}</span></div>
+    <p class="second">Choisissez la qualité des réponses rédigées par l'IA. Prix OpenRouter en dollars par million de jetons (entrée / sortie).</p>
+    <div class="offres">${Object.entries(d.niveaux).map(([k, n]) => `<div class="offre ${k === d.niveau ? "vedette" : ""}"><h3>${esc(n.nom)}</h3><p class="discret">${esc(n.modele)}</p>
+      <p class="num">${esc(n.prix)}<br><span class="discret">Une réponse à un avis : ${esc(n.par_reponse)}</span></p>
+      <button class="btn ${k === d.niveau ? "" : "plein"}" data-a="niveau" data-n="${k}" ${k === d.niveau ? "disabled" : ""}>${k === d.niveau ? "Niveau actuel" : "Utiliser ce niveau"}</button></div>`).join("")}</div>
+    ${d.openrouter ? "" : `<p class="discret">Ajoutez OPENROUTER_API_KEY dans le fichier app/.env puis relancez le serveur.</p>`}</div>
   <div class="chiffres" style="margin:0 0 22px"><div><b class="num">${d.comptes.length}</b><span>Comptes</span></div><div><b class="num">${t.etab}</b><span>Établissements</span></div>
     <div><b class="num">${t.avis}</b><span>Avis gérés</span></div><div><b class="num">${fr(rev / 100, 0)} DH</b><span>Encaissé (démo)</span></div></div>
   <div class="carte"><h2 style="margin-bottom:12px">Comptes</h2><div class="tableau-defile"><table class="liste"><thead><tr><th>Nom</th><th>E-mail</th><th>Rôle</th><th>Offre</th><th>Fin</th><th>Établ.</th><th>IA ce mois</th></tr></thead><tbody>
@@ -508,6 +515,7 @@ document.addEventListener("click", async (ev) => {
       try { await navigator.clipboard.writeText(v); toast("Copié"); } catch (e) { const r = document.createRange(); r.selectNodeContents(el); getSelection().removeAllRanges(); getSelection().addRange(r); toast("Sélectionné : Ctrl + C pour copier"); } return; }
     if (a === "suggestion") { $("#q").value = b.dataset.q; poser(b.dataset.q); return; }
     if (a === "action") { await api(`/api/actions/${b.dataset.id}/statut`, { statut: b.dataset.s }); toast("Action mise à jour"); vueActions(); return; }
+    if (a === "niveau") { await api("/api/admin/niveau-ia", { niveau: b.dataset.n }); toast("Niveau d'IA changé"); await charger(); return; }
     if (a === "payer") { b.disabled = true; await api("/api/abonnement/payer", { offre: b.dataset.o }); toast("Abonnement activé (démonstration)"); await charger(); return; }
     if (a === "supprimer-etab") {
       if (b.dataset.confirme !== "1") { b.dataset.confirme = "1"; b.textContent = "Cliquez encore pour confirmer la suppression définitive"; return; }
