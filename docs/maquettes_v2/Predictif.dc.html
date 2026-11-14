@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Prédictif</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#0A0C0B;color:#EAF0EC;font-family:'Manrope',system-ui,sans-serif;font-size:15px;line-height:1.5}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes grow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.app{display:flex;flex-wrap:wrap;min-height:1300px;background:#0A0C0B}
+.side{flex:0 0 264px;background:#0F1311;border-right:1px solid #1E2522;padding:28px 20px;display:flex;flex-direction:column;gap:32px}
+.brand{display:flex;align-items:center;gap:12px}
+.brand .mk{flex:0 0 40px;width:40px;height:40px;border-radius:12px;background:#D4FF3A;display:flex;align-items:center;justify-content:center;color:#0A0C0B}
+.brand .nm{font-size:20px;font-weight:800;line-height:1.1}
+.brand .sb{font-size:12px;color:#93A09A}
+.nav{display:flex;flex-direction:column;gap:6px}
+.nav a{display:flex;align-items:center;gap:14px;height:46px;padding:0 14px;border-radius:12px;color:#B7C2BC;font-weight:600;font-size:15px}
+.nav a svg{flex:0 0 20px;width:20px;height:20px}
+.nav a.on{background:rgba(212,255,58,.10);color:#D4FF3A}
+.nav a:hover{background:#171D1A;color:#FFFFFF}
+.nav a.on:hover{background:rgba(212,255,58,.14);color:#D4FF3A}
+.mode{margin-top:auto;background:#151A17;border:1px solid #242B27;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:12px}
+.mode .t{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#93A09A}
+.mode .n{font-size:12px;color:#93A09A;line-height:1.5}
+.seg{display:flex;background:#0A0C0B;border-radius:12px;padding:4px;gap:4px}
+.seg button{flex:1;height:36px;border:0;border-radius:9px;background:transparent;color:#93A09A;font-weight:700;font-size:13px;cursor:pointer}
+.seg button.on{background:#D4FF3A;color:#0A0C0B}
+.main{flex:999 1 640px;min-width:0;padding:36px 44px 56px;display:flex;flex-direction:column;gap:28px}
+.head{display:flex;flex-wrap:wrap;gap:20px;justify-content:space-between;align-items:center}
+.head h1{margin:0;font-size:34px;font-weight:800;line-height:1.15}
+.head p{margin:6px 0 0;color:#93A09A;font-size:15px}
+.row{display:flex;flex-wrap:wrap;gap:24px;align-items:stretch}
+.card{background:#151A17;border:1px solid #242B27;border-radius:20px;padding:28px;animation:rise .6s both;min-width:0}
+.card h2{margin:0 0 4px;font-size:19px;font-weight:700}
+.card .sub{color:#93A09A;font-size:14px;margin:0 0 22px}
+.lbl{font-size:14px;color:#93A09A;font-weight:600}
+.num{font-size:52px;font-weight:800;line-height:1.05;color:#EAF0EC}
+.num small{font-size:20px;font-weight:600;color:#93A09A;margin-left:4px}
+.pill{display:inline-flex;align-items:center;height:28px;padding:0 12px;border-radius:999px;font-size:13px;font-weight:700}
+.p-ok{background:rgba(91,228,155,.14);color:#5BE49B}
+.p-ko{background:rgba(255,107,107,.14);color:#FF6B6B}
+.p-mid{background:rgba(255,180,84,.14);color:#FFB454}
+.p-info{background:rgba(61,232,240,.12);color:#3DE8F0}
+.p-lime{background:rgba(212,255,58,.14);color:#D4FF3A}
+.note{color:#93A09A;font-size:13px;line-height:1.6}
+.ta{background:#0F1311;border:1px solid #2C3531;border-radius:16px;padding:20px 22px;font-size:16px;line-height:1.7;color:#EAF0EC}
+.w{display:inline-flex;align-items:center;gap:8px;height:36px;padding:0 14px;border-radius:999px;font-weight:700;font-size:14px}
+.w b{font-weight:800}
+.mb{display:flex;align-items:center;gap:16px;padding:12px 0}
+.mb .n{flex:0 0 230px;font-weight:600;font-size:15px}
+.mb .t{flex:1;height:14px;border-radius:7px;background:#0F1311;overflow:hidden}
+.mb .t i{display:block;height:100%;border-radius:7px;transform-origin:left;animation:grow 1s .3s both}
+.mb .v{flex:0 0 52px;text-align:right;font-weight:800;font-size:16px}
+.bi{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 0;border-top:1px solid #242B27}
+.bi:first-of-type{border-top:0;padding-top:0}
+.bi b{display:block;font-size:15px}
+.bi span.s{color:#93A09A;font-size:13px}
+</style>
+</helmet>
+<div class="app">
+
+<aside class="side">
+<div class="brand">
+<div class="mk"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 16l5-6 4 4 7-9"/></svg></div>
+<div><div class="nm">VoxCX</div><div class="sb">Écoute client · IA</div></div>
+</div>
+<nav class="nav" aria-label="Navigation principale">
+<a href="Main.dc.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg><span>Accueil</span></a>
+<a href="Themes.dc.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7l8-4 8 4-8 4-8-4z"/><path d="M4 12l8 4 8-4"/><path d="M4 17l8 4 8-4"/></svg><span>Thèmes</span></a>
+<a href="Assistant.dc.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg><span>Pose ta question</span></a>
+<a class="on" href="Predictif.dc.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg><span>Prédictif</span></a>
+<a href="Plan.dc.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11"/><path d="M3.5 6l1.5 1.5L7 5M3.5 12l1.5 1.5L7 11M3.5 18l1.5 1.5L7 17"/></svg><span>Plan d'actions</span></a>
+</nav>
+<div class="mode">
+<div class="t">Mode IA</div>
+<div class="seg"><button class="on">Local</button><button>En ligne</button></div>
+<div class="n">Local : gratuit, sans Internet. En ligne : Claude, réponses plus riches. Bascule automatique si le réseau tombe.</div>
+</div>
+</aside>
+
+<main class="main">
+<header class="head">
+<div>
+<h1>Repérer les clients insatisfaits</h1>
+<p>L'IA lit un avis et estime le risque d'insatisfaction (3 étoiles ou moins) et la note probable</p>
+</div>
+</header>
+
+<section class="row">
+<div class="card" style="flex:1 1 280px;display:flex;flex-direction:column;gap:10px;animation-delay:.05s">
+<span class="lbl">Fiabilité de la détection</span>
+<span class="num" style="color:#D4FF3A">0,83</span>
+<span class="note">Score F1 sur 809 avis récents, jamais vus par le modèle</span>
+</div>
+<div class="card" style="flex:1 1 280px;display:flex;flex-direction:column;gap:10px;animation-delay:.12s">
+<span class="lbl">Erreur sur la note prévue</span>
+<span class="num">0,33<small>étoile</small></span>
+<span class="note">contre 0,63 sans IA (simple moyenne)</span>
+</div>
+<div class="card" style="flex:1 1 280px;display:flex;flex-direction:column;gap:10px;animation-delay:.19s">
+<span class="lbl">Avis utilisés pour apprendre</span>
+<span class="num">2 426</span>
+<span class="note">les plus anciens ; test sur les plus récents (depuis le 04/09/2026)</span>
+</div>
+</section>
+
+<section class="row">
+<div class="card" style="flex:7 1 520px;animation-delay:.25s">
+<h2>Tester un avis</h2>
+<p class="sub">Collez un avis en français, anglais ou arabe. Exemple (illustration).</p>
+<div class="ta">« Chambre bruyante, on n'a pas pu dormir. Le personnel est gentil mais le petit-déjeuner était décevant pour le prix. »</div>
+<div style="display:flex;flex-wrap:wrap;gap:36px;align-items:center;margin-top:26px">
+<div style="display:flex;gap:20px;align-items:center">
+<svg width="120" height="120" viewBox="0 0 120 120" aria-hidden="true" style="flex:0 0 120px"><circle cx="60" cy="60" r="50" fill="none" stroke="#0F1311" stroke-width="12"/><circle cx="60" cy="60" r="50" fill="none" stroke="#FF6B6B" stroke-width="12" stroke-linecap="round" stroke-dasharray="232 314" transform="rotate(-90 60 60)"/><text x="60" y="68" text-anchor="middle" font-family="Manrope, sans-serif" font-size="26" font-weight="800" fill="#EAF0EC">74 %</text></svg>
+<div><span class="lbl">Risque d'insatisfaction</span><br><span class="pill p-ko" style="margin-top:6px">Au-dessus du seuil</span></div>
+</div>
+<div><span class="lbl">Note prévue</span><br><span class="num" style="font-size:40px">2,1<small>/ 5</small></span></div>
+</div>
+<div style="margin-top:26px"><span class="lbl">Les mots qui pèsent dans la décision</span>
+<div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:12px">
+<span class="w p-ko">bruyante <b>+0,31</b></span><span class="w p-ko">décevant <b>+0,22</b></span><span class="w p-ko">prix <b>+0,14</b></span><span class="w p-ok">gentil <b>−0,18</b></span><span class="w p-ok">personnel <b>−0,12</b></span>
+</div></div>
+</div>
+
+<div class="card" style="flex:5 1 400px;animation-delay:.32s">
+<h2>Pourquoi ce modèle ?</h2>
+<p class="sub">Quatre modèles comparés sur les mêmes avis (score F1)</p>
+<div class="mb"><span class="n">Mots + sentiment (retenu)</span><div class="t"><i style="width:83%;background:#D4FF3A"></i></div><span class="v" style="color:#D4FF3A">0,83</span></div>
+<div class="mb"><span class="n">Sentiment seul</span><div class="t"><i style="width:75.6%;background:#3DE8F0"></i></div><span class="v">0,76</span></div>
+<div class="mb"><span class="n">Mots seuls (régression)</span><div class="t"><i style="width:66.3%;background:#3DE8F0"></i></div><span class="v">0,66</span></div>
+<div class="mb"><span class="n">Forêt aléatoire</span><div class="t"><i style="width:56.7%;background:#3DE8F0"></i></div><span class="v">0,57</span></div>
+<p class="note" style="margin:14px 0 0">Le modèle retenu est aussi celui qu'on sait expliquer mot par mot (méthode SHAP). Source : expérimentation sur les avis Kenzi.</p>
+</div>
+</section>
+
+<section class="card" style="animation-delay:.4s">
+<h2>Contrôle des biais</h2>
+<p class="sub">Le modèle marche-t-il aussi bien pour tous les groupes de clients ? (exemple de présentation)</p>
+<div class="bi"><div><b>Langue de l'avis</b><span class="s">Français, anglais, arabe, espagnol</span></div><span class="pill p-ok">Écart faible</span></div>
+<div class="bi"><div><b>Type de voyage</b><span class="s">Affaires, couple, famille, amis, seul</span></div><span class="pill p-ok">Écart faible</span></div>
+<div class="bi"><div><b>Ville</b><span class="s">Casablanca, Marrakech, Agadir, Tanger</span></div><span class="pill p-mid">À surveiller</span></div>
+<p class="note" style="margin:14px 0 0">Aucune décision automatique : chaque alerte est relue par un responsable. Le modèle ne reçoit ni le nom, ni la nationalité du client.</p>
+</section>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1300}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

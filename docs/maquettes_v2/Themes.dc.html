@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Thèmes</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#0A0C0B;color:#EAF0EC;font-family:'Manrope',system-ui,sans-serif;font-size:15px;line-height:1.5}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes grow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.app{display:flex;flex-wrap:wrap;min-height:1300px;background:#0A0C0B}
+.side{flex:0 0 264px;background:#0F1311;border-right:1px solid #1E2522;padding:28px 20px;display:flex;flex-direction:column;gap:32px}
+.brand{display:flex;align-items:center;gap:12px}
+.brand .mk{flex:0 0 40px;width:40px;height:40px;border-radius:12px;background:#D4FF3A;display:flex;align-items:center;justify-content:center;color:#0A0C0B}
+.brand .nm{font-size:20px;font-weight:800;line-height:1.1}
+.brand .sb{font-size:12px;color:#93A09A}
+.nav{display:flex;flex-direction:column;gap:6px}
+.nav a{display:flex;align-items:center;gap:14px;height:46px;padding:0 14px;border-radius:12px;color:#B7C2BC;font-weight:600;font-size:15px}
+.nav a svg{flex:0 0 20px;width:20px;height:20px}
+.nav a.on{background:rgba(212,255,58,.10);color:#D4FF3A}
+.nav a:hover{background:#171D1A;color:#FFFFFF}
+.nav a.on:hover{background:rgba(212,255,58,.14);color:#D4FF3A}
+.mode{margin-top:auto;background:#151A17;border:1px solid #242B27;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:12px}
+.mode .t{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#93A09A}
+.mode .n{font-size:12px;color:#93A09A;line-height:1.5}
+.seg{display:flex;background:#0A0C0B;border-radius:12px;padding:4px;gap:4px}
+.seg button{flex:1;height:36px;border:0;border-radius:9px;background:transparent;color:#93A09A;font-weight:700;font-size:13px;cursor:pointer}
+.seg button.on{background:#D4FF3A;color:#0A0C0B}
+.main{flex:999 1 640px;min-width:0;padding:36px 44px 56px;display:flex;flex-direction:column;gap:28px}
+.head{display:flex;flex-wrap:wrap;gap:20px;justify-content:space-between;align-items:center}
+.head h1{margin:0;font-size:34px;font-weight:800;line-height:1.15}
+.head p{margin:6px 0 0;color:#93A09A;font-size:15px}
+.tools{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.chip{display:flex;align-items:center;gap:10px;height:44px;padding:0 16px;border-radius:12px;background:#151A17;border:1px solid #242B27;color:#EAF0EC;font-weight:600;font-size:14px}
+.chip svg{flex:0 0 18px;width:18px;height:18px;color:#93A09A}
+.btn{display:flex;align-items:center;gap:10px;height:44px;padding:0 20px;border-radius:12px;border:0;background:#D4FF3A;color:#0A0C0B;font-weight:800;font-size:14px;cursor:pointer}
+.btn svg{flex:0 0 18px;width:18px;height:18px}
+.row{display:flex;flex-wrap:wrap;gap:24px;align-items:stretch}
+.card{background:#151A17;border:1px solid #242B27;border-radius:20px;padding:28px;animation:rise .6s both;min-width:0}
+.card h2{margin:0 0 4px;font-size:19px;font-weight:700}
+.card .sub{color:#93A09A;font-size:14px;margin:0 0 22px}
+.lbl{font-size:14px;color:#93A09A;font-weight:600}
+.pill{display:inline-flex;align-items:center;height:28px;padding:0 12px;border-radius:999px;font-size:13px;font-weight:700}
+.p-ok{background:rgba(91,228,155,.14);color:#5BE49B}
+.p-ko{background:rgba(255,107,107,.14);color:#FF6B6B}
+.p-mid{background:rgba(255,180,84,.14);color:#FFB454}
+.p-info{background:rgba(61,232,240,.12);color:#3DE8F0}
+.p-lime{background:rgba(212,255,58,.14);color:#D4FF3A}
+.lnk{color:#D4FF3A;font-weight:700;font-size:14px}
+.note{color:#93A09A;font-size:13px;line-height:1.6}
+.th{display:flex;align-items:center;gap:16px;padding:12px 0;border-top:1px solid #242B27}
+.th:first-of-type{border-top:0}
+.th .n{flex:0 0 210px;font-weight:600}
+.th .t{flex:1;height:12px;border-radius:6px;background:#5BE49B;overflow:hidden;position:relative}
+.th .t i{position:absolute;left:0;top:0;bottom:0;background:#FF6B6B;transform-origin:left;animation:grow 1s .3s both}
+.th .m{flex:0 0 70px;text-align:right;color:#93A09A;font-size:14px}
+.th .p{flex:0 0 64px;text-align:right;font-weight:800}
+.pr{display:flex;gap:18px;align-items:flex-start;padding:20px 0;border-top:1px solid #242B27}
+.pr:first-of-type{border-top:0;padding-top:0}
+.pr .rk{flex:0 0 44px;width:44px;height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:18px}
+.pr b{font-size:17px;display:block}
+.pr span{color:#93A09A;font-size:14px}
+.pr .t{height:8px;border-radius:4px;background:#0F1311;margin-top:12px;overflow:hidden}
+.pr .t i{display:block;height:100%;border-radius:4px;transform-origin:left;animation:grow 1s .4s both}
+.hl-p{background:rgba(91,228,155,.16);padding:3px 6px;border-radius:6px}
+.hl-n{background:rgba(255,107,107,.18);padding:3px 6px;border-radius:6px}
+.hl-0{background:rgba(147,160,154,.18);padding:3px 6px;border-radius:6px}
+.tg{display:inline-block;margin:0 6px 0 4px;padding:1px 8px;border-radius:999px;background:#0F1311;color:#93A09A;font-size:12px;font-weight:600}
+.sel{display:inline-flex;align-items:center;height:36px;padding:0 16px;border-radius:999px;border:1px solid #242B27;color:#B7C2BC;font-weight:600;font-size:14px;background:transparent}
+.sel.on{background:#D4FF3A;color:#0A0C0B;border-color:#D4FF3A}
+</style>
+</helmet>
+<div class="app">
+
+<aside class="side">
+<div class="brand">
+<div class="mk"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 16l5-6 4 4 7-9"/></svg></div>
+<div><div class="nm">VoxCX</div><div class="sb">Écoute client · IA</div></div>
+</div>
+<nav class="nav" aria-label="Navigation principale">
+<a href="Main.dc.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg><span>Accueil</span></a>
+<a class="on" href="Themes.dc.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7l8-4 8 4-8 4-8-4z"/><path d="M4 12l8 4 8-4"/><path d="M4 17l8 4 8-4"/></svg><span>Thèmes</span></a>
+<a href="Assistant.dc.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg><span>Pose ta question</span></a>
+<a href="Predictif.dc.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg><span>Prédictif</span></a>
+<a href="Plan.dc.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11"/><path d="M3.5 6l1.5 1.5L7 5M3.5 12l1.5 1.5L7 11M3.5 18l1.5 1.5L7 17"/></svg><span>Plan d'actions</span></a>
+</nav>
+<div class="mode">
+<div class="t">Mode IA</div>
+<div class="seg"><button class="on">Local</button><button>En ligne</button></div>
+<div class="n">Local : gratuit, sans Internet. En ligne : Claude, réponses plus riches. Bascule automatique si le réseau tombe.</div>
+</div>
+</aside>
+
+<main class="main">
+<header class="head">
+<div>
+<h1>Ce que disent vos clients</h1>
+<p>Les sujets les plus cités dans les commentaires, et ceux qui posent problème</p>
+</div>
+<div class="tools">
+<div class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4M16 3v4M3 10h18"/></svg><span>14/05/2026 – 16/10/2026</span></div>
+<div class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16M16 9h2a2 2 0 0 1 2 2v10M2 21h20M8 8h4M8 12h4M8 16h4"/></svg><span>7 hôtels</span></div>
+<button class="btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 11l5 5 5-5M4 20h16"/></svg><span>Exporter</span></button>
+</div>
+</header>
+
+<div style="display:flex;flex-wrap:wrap;gap:10px">
+<span class="sel on">Tous les hôtels</span><span class="sel">Casablanca</span><span class="sel">Marrakech</span><span class="sel">Agadir</span><span class="sel">Tanger</span>
+</div>
+
+<section class="row">
+<div class="card" style="flex:7 1 520px;animation-delay:.05s">
+<h2>Les sujets les plus cités</h2>
+<p class="sub">Vert : commentaires positifs ou neutres. Rouge : commentaires négatifs.</p>
+<div class="th"><span class="n">Personnel et service</span><div class="t"><i style="width:10%"></i></div><span class="m">3 056 avis</span><span class="p">10 %</span></div>
+<div class="th"><span class="n">Piscine, spa et animations</span><div class="t"><i style="width:10%"></i></div><span class="m">1 368 avis</span><span class="p">10 %</span></div>
+<div class="th"><span class="n">Chambre et literie</span><div class="t"><i style="width:34%"></i></div><span class="m">1 031 avis</span><span class="p" style="color:#FF6B6B">34 %</span></div>
+<div class="th"><span class="n">Petit-déjeuner et restauration</span><div class="t"><i style="width:21%"></i></div><span class="m">908 avis</span><span class="p">21 %</span></div>
+<div class="th"><span class="n">Propreté</span><div class="t"><i style="width:21%"></i></div><span class="m">498 avis</span><span class="p">21 %</span></div>
+<div class="th"><span class="n">Emplacement</span><div class="t"><i style="width:14%"></i></div><span class="m">283 avis</span><span class="p">14 %</span></div>
+<div class="th"><span class="n">Arrivée et départ</span><div class="t"><i style="width:40%"></i></div><span class="m">249 avis</span><span class="p" style="color:#FF6B6B">40 %</span></div>
+<div class="th"><span class="n">Prix et rapport qualité-prix</span><div class="t"><i style="width:47%"></i></div><span class="m">142 avis</span><span class="p" style="color:#FF6B6B">47 %</span></div>
+<div class="th"><span class="n">Bruit</span><div class="t"><i style="width:65%"></i></div><span class="m">80 avis</span><span class="p" style="color:#FF6B6B">65 %</span></div>
+<div class="th"><span class="n">Wi-Fi et équipements</span><div class="t"><i style="width:76%"></i></div><span class="m">80 avis</span><span class="p" style="color:#FF6B6B">76 %</span></div>
+</div>
+
+<div class="card" style="flex:5 1 380px;animation-delay:.12s">
+<h2>À traiter en premier</h2>
+<p class="sub">Classement selon le nombre de plaintes, leur gravité et leur évolution</p>
+<div class="pr"><div class="rk" style="background:rgba(255,107,107,.16);color:#FF6B6B">1</div><div style="flex:1"><b>Chambre et literie</b><span>320 commentaires négatifs · en hausse de 6,8 points</span><div class="t"><i style="width:100%;background:#FF6B6B"></i></div></div><span class="pill p-ko">100</span></div>
+<div class="pr"><div class="rk" style="background:rgba(255,180,84,.16);color:#FFB454">2</div><div style="flex:1"><b>Personnel et service</b><span>265 commentaires négatifs · stable</span><div class="t"><i style="width:64%;background:#FFB454"></i></div></div><span class="pill p-mid">64</span></div>
+<div class="pr"><div class="rk" style="background:rgba(61,232,240,.14);color:#3DE8F0">3</div><div style="flex:1"><b>Propreté</b><span>98 commentaires négatifs · en hausse de 8,7 points</span><div class="t"><i style="width:26%;background:#3DE8F0"></i></div></div><span class="pill p-info">26</span></div>
+<a class="lnk" href="Plan.dc.html">Voir les actions proposées</a>
+</div>
+</section>
+
+<section class="card" style="animation-delay:.2s">
+<h2>Comment l'IA lit un avis</h2>
+<p class="sub">Chaque phrase est classée par sujet et par sentiment. Exemple d'avis (illustration).</p>
+<p style="margin:0;font-size:17px;line-height:2.2">
+<span class="hl-p">L'emplacement est idéal</span><span class="tg">Emplacement</span>
+<span class="hl-n">mais impossible de dormir à cause de la musique</span><span class="tg">Bruit</span>
+<span class="hl-p">Le personnel de la réception a été adorable</span><span class="tg">Personnel et service</span>
+<span class="hl-0">le petit-déjeuner était correct sans plus</span><span class="tg">Petit-déjeuner</span>
+</p>
+<div style="display:flex;flex-wrap:wrap;gap:20px;margin-top:20px;align-items:center">
+<span class="pill p-ok">Positif</span><span class="pill p-ko">Négatif</span><span class="pill p-info" style="background:rgba(147,160,154,.18);color:#B7C2BC">Neutre</span>
+<span class="note">Fiabilité vérifiée avec les notes détaillées que les clients donnent eux-mêmes sur Google (« Chambre » : corrélation 0,67).</span>
+</div>
+</section>
+
+<footer class="note">Source : avis publics Google Maps des hôtels Kenzi. Sentiment calculé par un modèle multilingue local (français, anglais, arabe, espagnol…).</footer>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1300}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

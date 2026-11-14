@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Tableau de bord Direction</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#1F3864;--blue:#2E74B5;--brown:#8B4513;--green:#0F5132;--red:#C00000;--gray:#595959;--line:#DDE3EC;--bg:#F3F5F9;--ink:#1B2433}
+body{margin:0;font-family:'IBM Plex Sans',system-ui,sans-serif;background:#F3F5F9;color:#1B2433}
+a{color:inherit;text-decoration:none}
+a:hover{color:#FFFFFF}
+button{font-family:inherit}
+</style>
+</helmet>
+<div style="width:100%;min-height:1500px;display:flex;flex-wrap:wrap;background:var(--bg)">
+
+<aside style="flex:0 0 248px;background:var(--navy);color:#FFFFFF;padding:28px 18px;box-sizing:border-box;display:flex;flex-direction:column;gap:28px">
+<div style="display:flex;align-items:center;gap:10px">
+<svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="8" fill="#2E74B5"/><path d="M7 20 L12 12 L17 17 L25 7" fill="none" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+<div style="display:flex;flex-direction:column;line-height:1.1"><span style="font-weight:700;font-size:18px">VoxCX</span><span style="font-size:11px;opacity:.75">Écoute client · IA</span></div>
+</div>
+<nav aria-label="Navigation principale" style="display:flex;flex-direction:column;gap:4px">
+<sc-for list="{{nav}}" as="n" hint-placeholder-count="5">
+<a href="{{n.href}}" style="display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:10px;font-size:14px;font-weight:{{n.fw}};background:{{n.bg}};color:#FFFFFF">
+<span style="width:22px;height:22px;border-radius:6px;background:rgba(255,255,255,.16);display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:600">{{n.num}}</span>
+<span>{{n.label}}</span>
+</a>
+</sc-for>
+</nav>
+<div style="margin-top:auto;display:flex;flex-direction:column;gap:14px">
+<div style="background:rgba(255,255,255,.08);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px">
+<span style="font-size:11px;letter-spacing:.06em;text-transform:uppercase;opacity:.7">Mode IA</span>
+<div style="display:flex;gap:6px">
+<button style="flex:1;border:0;border-radius:8px;padding:9px 6px;font-size:12px;font-weight:600;background:#FFFFFF;color:var(--navy);cursor:pointer">En ligne · Claude</button>
+<button style="flex:1;border:1px solid rgba(255,255,255,.35);border-radius:8px;padding:9px 6px;font-size:12px;font-weight:500;background:transparent;color:#FFFFFF;cursor:pointer">Local · gratuit</button>
+</div>
+<span style="font-size:11px;line-height:1.4;opacity:.75">Bascule automatique en local si le réseau ou l'API tombe.</span>
+</div>
+<span style="font-size:11px;line-height:1.5;opacity:.7">Jeu de données : 515K Hotel Reviews (Booking.com), 6 sites, avis du 08/2015 au 07/2017.</span>
+</div>
+</aside>
+
+<main style="flex:999 1 560px;min-width:0;padding:30px 38px 48px;box-sizing:border-box;display:flex;flex-direction:column;gap:24px">
+
+<header style="display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end;justify-content:space-between">
+<div style="display:flex;flex-direction:column;gap:4px">
+<h1 style="margin:0;font-size:28px;font-weight:700;color:var(--navy)">Tableau de bord Direction</h1>
+<span style="font-size:14px;color:var(--gray)">Groupe hôtelier · 6 sites · 1 842 avis analysés sur la période</span>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:10px">
+<button style="border:1px solid var(--line);background:#FFFFFF;border-radius:10px;padding:10px 14px;font-size:13px;color:var(--ink);cursor:pointer">Période : 01/08/2015 – 31/07/2017</button>
+<button style="border:1px solid var(--line);background:#FFFFFF;border-radius:10px;padding:10px 14px;font-size:13px;color:var(--ink);cursor:pointer">Sites : 6 sur 6</button>
+<button style="border:1px solid var(--line);background:#FFFFFF;border-radius:10px;padding:10px 14px;font-size:13px;color:var(--ink);cursor:pointer">Langue : toutes</button>
+<button style="border:0;background:var(--blue);border-radius:10px;padding:10px 16px;font-size:13px;font-weight:600;color:#FFFFFF;cursor:pointer">Exporter le rapport (PDF)</button>
+</div>
+</header>
+
+<section aria-label="Briefing du lundi" style="background:#FFFFFF;border:1px solid var(--line);border-radius:16px;overflow:hidden">
+<div style="background:var(--navy);color:#FFFFFF;padding:12px 22px;display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between;align-items:center">
+<span style="font-weight:600;font-size:14px">Briefing du lundi · semaine du 24/07/2017</span>
+<span style="font-size:12px;opacity:.8">Généré par l'IA à partir de 212 avis · à valider par un responsable</span>
+</div>
+<div style="padding:20px 22px;display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start">
+<ul style="flex:2 1 420px;margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px">
+<sc-for list="{{brief}}" as="b" hint-placeholder-count="3">
+<li style="display:flex;gap:12px;align-items:flex-start;font-size:15px;line-height:1.5">
+<span style="flex:0 0 auto;margin-top:2px;width:22px;height:22px;border-radius:50%;background:{{b.dot}};color:#FFFFFF;font-size:12px;font-weight:700;display:inline-flex;align-items:center;justify-content:center">{{b.n}}</span>
+<span>{{b.text}} <span style="display:inline-block;margin-left:4px;padding:2px 8px;border-radius:999px;background:#EAF1FA;color:var(--navy);font-size:12px;font-weight:600">{{b.src}}</span></span>
+</li>
+</sc-for>
+</ul>
+<div style="flex:1 1 220px;display:flex;flex-direction:column;gap:10px">
+<button style="border:1px solid var(--blue);background:#FFFFFF;color:var(--blue);border-radius:10px;padding:11px 14px;font-size:13px;font-weight:600;cursor:pointer">Voir les avis sources</button>
+<button style="border:0;background:var(--green);color:#FFFFFF;border-radius:10px;padding:11px 14px;font-size:13px;font-weight:600;cursor:pointer">Valider le briefing</button>
+<span style="font-size:12px;color:var(--gray);line-height:1.5">Chaque phrase est reliée à des avis réels. Aucune recommandation n'est appliquée sans validation humaine.</span>
+</div>
+</div>
+</section>
+
+<section aria-label="Indicateurs clés" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px">
+<sc-for list="{{kpis}}" as="k" hint-placeholder-count="5">
+<div style="background:#FFFFFF;border:1px solid var(--line);border-radius:16px;padding:18px 20px;display:flex;flex-direction:column;gap:8px">
+<span style="font-size:13px;color:var(--gray)">{{k.label}}</span>
+<span style="font-size:32px;font-weight:700;color:var(--navy);line-height:1">{{k.value}}<span style="font-size:15px;font-weight:500;color:var(--gray)">{{k.unit}}</span></span>
+<span style="align-self:flex-start;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:600;background:{{k.bg}};color:{{k.fg}}">{{k.delta}}</span>
+</div>
+</sc-for>
+</section>
+
+<section style="display:flex;flex-wrap:wrap;gap:20px;align-items:stretch">
+
+<div style="flex:2 1 560px;min-width:0;background:#FFFFFF;border:1px solid var(--line);border-radius:16px;padding:22px;display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between;align-items:baseline">
+<h2 style="margin:0;font-size:17px;color:var(--navy)">Note moyenne du groupe : avant / après le plan d'actions</h2>
+<span style="font-size:12px;color:var(--gray)">Note sur 10, par mois</span>
+</div>
+<svg viewBox="0 0 780 250" width="100%" role="img" aria-label="Courbe de la note moyenne mensuelle, de 7,7 avant le plan d'actions à 8,1 après" style="display:block">
+<g stroke="#E3E8F0" stroke-width="1">
+<line x1="20" y1="40" x2="770" y2="40"/><line x1="20" y1="88" x2="770" y2="88"/><line x1="20" y1="136" x2="770" y2="136"/><line x1="20" y1="184" x2="770" y2="184"/>
+</g>
+<g font-family="IBM Plex Sans, sans-serif" font-size="11" fill="#595959">
+<text x="0" y="44" text-anchor="start"> </text>
+<text x="24" y="34">8,4</text><text x="24" y="82">8,1</text><text x="24" y="130">7,8</text><text x="24" y="178">7,5</text>
+<text x="20" y="226" text-anchor="middle">08/2015</text><text x="148" y="226" text-anchor="middle">12/2015</text><text x="276" y="226" text-anchor="middle">04/2016</text><text x="404" y="226" text-anchor="middle">08/2016</text><text x="532" y="226" text-anchor="middle">12/2016</text><text x="660" y="226" text-anchor="middle">04/2017</text><text x="756" y="226" text-anchor="middle">07/2017</text>
+</g>
+<rect x="516" y="40" width="254" height="160" fill="#0F5132" opacity=".07"/>
+<polyline points="20,120 52,136 84,120 116,152 148,136 180,152 212,168 244,152 276,136 308,152 340,168 372,152 404,136 436,152 468,168 500,152" fill="none" stroke="#595959" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="500,152 532,136 564,120 596,104 628,88 660,72 692,72 724,56 756,56" fill="none" stroke="#0F5132" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="756" cy="56" r="5" fill="#0F5132"/>
+<line x1="516" y1="30" x2="516" y2="200" stroke="#8B4513" stroke-width="1.5" stroke-dasharray="5 4"/>
+<g font-family="IBM Plex Sans, sans-serif" font-size="12" font-weight="600">
+<text x="508" y="24" text-anchor="end" fill="#8B4513">Plan d'actions : 01/12/2016</text>
+<text x="40" y="106" fill="#595959">Avant : 7,73</text>
+<text x="600" y="150" fill="#0F5132">Après : 8,10</text>
+</g>
+</svg>
+<div style="display:flex;flex-wrap:wrap;gap:16px;align-items:center;font-size:13px;color:var(--gray)">
+<span style="padding:4px 12px;border-radius:999px;background:#E6F2EC;color:var(--green);font-weight:700">+0,37 pt</span>
+<span>Écart de moyennes avant / après. Test statistique (t de Student) et période de contrôle affichés dans le rapport.</span>
+</div>
+</div>
+
+<div style="flex:1 1 300px;min-width:0;background:#FFFFFF;border:1px solid var(--line);border-radius:16px;padding:22px;display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;justify-content:space-between;align-items:baseline">
+<h2 style="margin:0;font-size:17px;color:var(--navy)">Alertes</h2>
+<span style="font-size:12px;color:var(--gray)">3 nouvelles</span>
+</div>
+<sc-for list="{{alerts}}" as="a" hint-placeholder-count="3">
+<div style="border-radius:12px;padding:14px;background:{{a.bg}};display:flex;flex-direction:column;gap:6px">
+<span style="align-self:flex-start;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:{{a.fg}}">{{a.level}}</span>
+<span style="font-size:14px;line-height:1.45;color:var(--ink)">{{a.text}}</span>
+<span style="font-size:12px;color:var(--gray)">{{a.meta}}</span>
+</div>
+</sc-for>
+</div>
+
+</section>
+
+<section style="display:flex;flex-wrap:wrap;gap:20px;align-items:stretch">
+
+<div style="flex:1 1 380px;min-width:0;background:#FFFFFF;border:1px solid var(--line);border-radius:16px;padding:22px;display:flex;flex-direction:column;gap:16px">
+<h2 style="margin:0;font-size:17px;color:var(--navy)">Benchmark inter-sites</h2>
+<sc-for list="{{sites}}" as="s" hint-placeholder-count="6">
+<div style="display:flex;align-items:center;gap:12px;font-size:14px">
+<span style="flex:0 0 92px">{{s.name}}</span>
+<div style="flex:1;height:12px;border-radius:6px;background:#E9EDF4;overflow:hidden"><div style="height:100%;width:{{s.w}}%;background:{{s.c}};border-radius:6px"></div></div>
+<span style="flex:0 0 44px;text-align:right;font-weight:600">{{s.score}}</span>
+</div>
+</sc-for>
+<span style="font-size:12px;color:var(--gray)">Barcelone passe sous le seuil d'alerte de 7,5.</span>
+</div>
+
+<div style="flex:1 1 380px;min-width:0;background:#FFFFFF;border:1px solid var(--line);border-radius:16px;padding:22px;display:flex;flex-direction:column;gap:16px">
+<h2 style="margin:0;font-size:17px;color:var(--navy)">Répartition des sentiments</h2>
+<div style="display:flex;height:34px;border-radius:10px;overflow:hidden">
+<div style="width:64%;background:var(--green);color:#FFFFFF;font-size:13px;font-weight:600;display:flex;align-items:center;justify-content:center">64 %</div>
+<div style="width:19%;background:#8E99AB;color:#FFFFFF;font-size:13px;font-weight:600;display:flex;align-items:center;justify-content:center">19 %</div>
+<div style="width:17%;background:var(--red);color:#FFFFFF;font-size:13px;font-weight:600;display:flex;align-items:center;justify-content:center">17 %</div>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:16px;font-size:13px;color:var(--gray)">
+<span>Positifs</span><span>Neutres</span><span>Négatifs</span>
+</div>
+<h3 style="margin:8px 0 0;font-size:14px;color:var(--navy)">Ce qui fait la différence</h3>
+<div style="display:flex;flex-wrap:wrap;gap:8px">
+<sc-for list="{{tags}}" as="t" hint-placeholder-count="8">
+<span style="padding:6px 12px;border-radius:999px;font-size:13px;font-weight:500;background:{{t.bg}};color:{{t.fg}}">{{t.label}}</span>
+</sc-for>
+</div>
+</div>
+
+</section>
+
+<footer style="font-size:12px;color:var(--gray);line-height:1.6;padding-top:4px">Maquette : valeurs illustratives. Les chiffres réels proviendront du sous-ensemble de 6 sites tiré du jeu de données Booking.com (08/2015 – 07/2017) ; l'avant / après mesure une association, pas une causalité.</footer>
+
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1500}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const on = 'rgba(255,255,255,.16)';
+    const off = 'transparent';
+    const nav = [
+      { href: 'Main.dc.html', num: '1', label: 'Direction', on: true },
+      { href: 'Themes.dc.html', num: '2', label: 'Thèmes et aspects', on: false },
+      { href: 'Assistant.dc.html', num: '3', label: 'Pose ta question', on: false },
+      { href: 'Predictif.dc.html', num: '4', label: 'Prédictif', on: false },
+      { href: 'Plan.dc.html', num: '5', label: 'Plan d\'actions', on: false }
+    ].map((n) => ({ ...n, bg: n.on ? on : off, fw: n.on ? 600 : 400 }));
+    return {
+      nav,
+      brief: [
+        { n: '1', dot: '#0F5132', text: 'La note moyenne du groupe passe de 7,73 à 8,10 depuis le plan d\'actions du 01/12/2016.', src: '212 avis' },
+        { n: '2', dot: '#C00000', text: 'Le bruit de nuit reste le premier motif de plainte à Barcelone : +38 % de mentions négatives en 8 semaines.', src: '41 avis' },
+        { n: '3', dot: '#2E74B5', text: 'Le petit-déjeuner est le premier motif de satisfaction à Vienne et à Milan (note 9,1).', src: '67 avis' }
+      ],
+      kpis: [
+        { label: 'Note moyenne', value: '8,10', unit: ' / 10', delta: '+0,37 vs avant', bg: '#E6F2EC', fg: '#0F5132' },
+        { label: 'NPS estimé', value: '+34', unit: '', delta: '+9 pts', bg: '#E6F2EC', fg: '#0F5132' },
+        { label: 'Taux de plaintes', value: '17', unit: ' %', delta: '−4 pts', bg: '#E6F2EC', fg: '#0F5132' },
+        { label: 'Thèmes critiques', value: '3', unit: '', delta: '1 de plus', bg: '#FBE9E7', fg: '#C00000' },
+        { label: 'Délai de détection', value: '2', unit: ' jours', delta: 'était 21 jours', bg: '#EAF1FA', fg: '#1F3864' }
+      ],
+      alerts: [
+        { level: 'Critique', fg: '#C00000', bg: '#FBEDEB', text: 'Bruit de nuit, Barcelone : +38 % de mentions négatives en 8 semaines.', meta: 'Priorité 92 / 100 · 41 avis' },
+        { level: 'Attention', fg: '#8B4513', bg: '#FBF1E6', text: 'Wi-Fi, Londres : thème émergent, de 0 à 41 mentions en un mois.', meta: 'Priorité 64 / 100 · 41 avis' },
+        { level: 'Bonne nouvelle', fg: '#0F5132', bg: '#E6F2EC', text: 'Petit-déjeuner, Vienne : record de satisfaction à 9,1 / 10.', meta: 'À valoriser · 67 avis' }
+      ],
+      sites: [
+        { name: 'Vienne', score: '8,6', w: 86, c: '#0F5132' },
+        { name: 'Amsterdam', score: '8,3', w: 83, c: '#2E74B5' },
+        { name: 'Paris', score: '8,1', w: 81, c: '#2E74B5' },
+        { name: 'Milan', score: '8,0', w: 80, c: '#2E74B5' },
+        { name: 'Londres', score: '7,9', w: 79, c: '#8B4513' },
+        { name: 'Barcelone', score: '7,4', w: 74, c: '#C00000' }
+      ],
+      tags: [
+        { label: 'Emplacement', bg: '#E6F2EC', fg: '#0F5132' },
+        { label: 'Personnel accueillant', bg: '#E6F2EC', fg: '#0F5132' },
+        { label: 'Petit-déjeuner', bg: '#E6F2EC', fg: '#0F5132' },
+        { label: 'Propreté', bg: '#E6F2EC', fg: '#0F5132' },
+        { label: 'Bruit de nuit', bg: '#FBE9E7', fg: '#C00000' },
+        { label: 'Rapport qualité / prix', bg: '#FBE9E7', fg: '#C00000' },
+        { label: 'Chambre vétuste', bg: '#FBE9E7', fg: '#C00000' },
+        { label: 'Wi-Fi', bg: '#FBF1E6', fg: '#8B4513' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

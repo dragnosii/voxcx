@@ -1,0 +1,20 @@
+{
+  "v": 3,
+  "createdOnFiles": { "v": 1, "at": "2026-10-17T10:00:00Z" },
+  "title": "Maquette Data Analyse v2",
+  "launch": { "view": "canvas" },
+  "pages": [],
+  "boards": {
+    "Main.dc.html": { "x": 0, "y": 0, "w": 1440, "h": 1560, "title": "1. Accueil", "expand": "fill", "is_interactive": true },
+    "Themes.dc.html": { "x": 1520, "y": 0, "w": 1440, "h": 1300, "title": "2. Thèmes", "expand": "fill", "is_interactive": true },
+    "Assistant.dc.html": { "x": 3040, "y": 0, "w": 1440, "h": 1100, "title": "3. Pose ta question", "expand": "fill", "is_interactive": true },
+    "Predictif.dc.html": { "x": 4560, "y": 0, "w": 1440, "h": 1300, "title": "4. Prédictif", "expand": "fill", "is_interactive": true },
+    "Plan.dc.html": { "x": 6080, "y": 0, "w": 1440, "h": 1400, "title": "5. Plan d'actions", "expand": "fill", "is_interactive": true }
+  },
+  "order": ["Main.dc.html", "Themes.dc.html", "Assistant.dc.html", "Predictif.dc.html", "Plan.dc.html"],
+  "notes": {
+    "titre": { "x": 0, "y": -320, "text": "VoxCX v2 : version sombre, plus simple et plus lisible", "kind": "title1", "maxW": 7520 },
+    "legende": { "x": 0, "y": -200, "w": 1000, "text": "Chaque écran : une idée par carte, grands chiffres, mots simples. Menu à gauche, filtres en haut. Les chiffres viennent des vraies données Kenzi (3 424 avis, 14/05 au 16/10/2026) ; les textes marqués « exemple » sont illustratifs. En mode Play, le menu relie les cinq écrans.", "size": "m" }
+  },
+  "designSystems": []
+}

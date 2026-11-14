@@ -1,0 +1,28 @@
+# Secrets et environnement
+.env
+**/.env
+**/.venv/
+**/__pycache__/
+
+# Données réelles et personnelles : jamais dans un dépôt public
+data/
+app/data/
+app/data_plateforme/
+app/ancien_streamlit/data/
+docs/maquettes_v3/src/donnees.json
+docs/maquettes_v3/VoxCX_2.0.html
+
+# Modèles d'IA (1,5 Go, téléchargés par app/telecharger_modeles.py)
+app/models/
+
+# Documents personnels du PFE (rapport, guide, présentation)
+rapport/
+
+# Divers
+*.log
+*.sqlite3*
+.playwright-mcp/
+
+# Notes internes et maquettes contenant de vrais avis
+docs/PROJET.md
+docs/maquettes_v3/src/gabarit.html

@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Assistant Pose ta question</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#1F3864;--blue:#2E74B5;--brown:#8B4513;--green:#0F5132;--red:#C00000;--gray:#595959;--line:#DDE3EC;--bg:#F3F5F9;--ink:#1B2433}
+body{margin:0;font-family:'IBM Plex Sans',system-ui,sans-serif;background:#F3F5F9;color:#1B2433}
+a{color:inherit;text-decoration:none}
+a:hover{color:#FFFFFF}
+button,input{font-family:inherit}
+</style>
+</helmet>
+<div style="width:100%;min-height:1200px;display:flex;flex-wrap:wrap;background:var(--bg)">
+
+<aside style="flex:0 0 248px;background:var(--navy);color:#FFFFFF;padding:28px 18px;box-sizing:border-box;display:flex;flex-direction:column;gap:28px">
+<div style="display:flex;align-items:center;gap:10px">
+<svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="8" fill="#2E74B5"/><path d="M7 20 L12 12 L17 17 L25 7" fill="none" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+<div style="display:flex;flex-direction:column;line-height:1.1"><span style="font-weight:700;font-size:18px">VoxCX</span><span style="font-size:11px;opacity:.75">Écoute client · IA</span></div>
+</div>
+<nav aria-label="Navigation principale" style="display:flex;flex-direction:column;gap:4px">
+<sc-for list="{{nav}}" as="n" hint-placeholder-count="5">
+<a href="{{n.href}}" style="display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:10px;font-size:14px;font-weight:{{n.fw}};background:{{n.bg}};color:#FFFFFF">
+<span style="width:22px;height:22px;border-radius:6px;background:rgba(255,255,255,.16);display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:600">{{n.num}}</span>
+<span>{{n.label}}</span>
+</a>
+</sc-for>
+</nav>
+<div style="margin-top:auto;display:flex;flex-direction:column;gap:14px">
+<div style="background:rgba(255,255,255,.08);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px">
+<span style="font-size:11px;letter-spacing:.06em;text-transform:uppercase;opacity:.7">Mode IA</span>
+<div style="display:flex;gap:6px">
+<button style="flex:1;border:0;border-radius:8px;padding:9px 6px;font-size:12px;font-weight:600;background:#FFFFFF;color:var(--navy);cursor:pointer">En ligne · Claude</button>
+<button style="flex:1;border:1px solid rgba(255,255,255,.35);border-radius:8px;padding:9px 6px;font-size:12px;font-weight:500;background:transparent;color:#FFFFFF;cursor:pointer">Local · gratuit</button>
+</div>
+<span style="font-size:11px;line-height:1.4;opacity:.75">Bascule automatique en local si le réseau ou l'API tombe.</span>
+</div>
+<span style="font-size:11px;line-height:1.5;opacity:.7">Jeu de données : 515K Hotel Reviews (Booking.com), 6 sites, avis du 08/2015 au 07/2017.</span>
+</div>
+</aside>
+
+<main style="flex:999 1 560px;min-width:0;padding:30px 38px 48px;box-sizing:border-box;display:flex;flex-direction:column;gap:24px">
+
+<header style="display:flex;flex-direction:column;gap:4px">
+<h1 style="margin:0;font-size:28px;font-weight:700;color:var(--navy)">Pose ta question</h1>
+<span style="font-size:14px;color:var(--gray)">Un assistant qui répond uniquement à partir des avis, avec les sources citées (RAG)</span>
+</header>
+
+<section style="display:flex;flex-wrap:wrap;gap:20px;align-items:stretch">
+
+<div style="flex:3 1 560px;min-width:0;background:#FFFFFF;border:1px solid var(--line);border-radius:16px;padding:22px;display:flex;flex-direction:column;gap:18px">
+
+<div style="align-self:flex-end;max-width:80%;background:var(--navy);color:#FFFFFF;border-radius:16px 16px 4px 16px;padding:14px 18px;font-size:15px;line-height:1.5">
+Pourquoi la note de Barcelone baisse-t-elle depuis le printemps 2017 ?
+</div>
+
+<div style="align-self:flex-start;max-width:92%;background:#F3F5F9;border-radius:16px 16px 16px 4px;padding:18px 20px;display:flex;flex-direction:column;gap:12px">
+<span style="font-size:12px;font-weight:600;color:var(--blue);letter-spacing:.04em;text-transform:uppercase">Réponse de l'assistant · mode en ligne</span>
+<p style="margin:0;font-size:15px;line-height:1.65">La note de Barcelone recule de 7,9 à 7,4 entre mars et juillet 2017. Trois causes ressortent des avis :</p>
+<ol style="margin:0;padding-left:20px;display:flex;flex-direction:column;gap:8px;font-size:15px;line-height:1.6">
+<li><strong>Le bruit de nuit</strong> (41 avis, +38 % en 8 semaines) : musique de bars voisins jusqu'à 3 h du matin <span style="padding:1px 8px;border-radius:999px;background:#EAF1FA;color:var(--navy);font-size:12px;font-weight:700">[1] [2]</span></li>
+<li><strong>Le rapport qualité / prix</strong> : les tarifs d'été ont augmenté sans amélioration perçue <span style="padding:1px 8px;border-radius:999px;background:#EAF1FA;color:var(--navy);font-size:12px;font-weight:700">[3]</span></li>
+<li><strong>La climatisation</strong> : pannes signalées dans 12 avis en juillet <span style="padding:1px 8px;border-radius:999px;background:#EAF1FA;color:var(--navy);font-size:12px;font-weight:700">[4]</span></li>
+</ol>
+<p style="margin:0;font-size:15px;line-height:1.65">Le personnel et l'emplacement restent très bien notés, ce qui limite la baisse.</p>
+<div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;font-size:12px;color:var(--gray)">
+<span style="padding:3px 10px;border-radius:999px;background:#E6F2EC;color:var(--green);font-weight:700">Confiance : élevée</span>
+<span>4 sources · 94 avis lus · 3,2 s · 0,004 €</span>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:10px">
+<button style="border:0;background:var(--green);color:#FFFFFF;border-radius:10px;padding:10px 16px;font-size:13px;font-weight:600;cursor:pointer">Réponse correcte</button>
+<button style="border:1px solid var(--line);background:#FFFFFF;color:var(--ink);border-radius:10px;padding:10px 16px;font-size:13px;font-weight:600;cursor:pointer">Signaler une erreur</button>
+<button style="border:1px solid var(--blue);background:#FFFFFF;color:var(--blue);border-radius:10px;padding:10px 16px;font-size:13px;font-weight:600;cursor:pointer">Créer une action à partir de cette réponse</button>
+</div>
+</div>
+
+<div style="display:flex;flex-wrap:wrap;gap:8px">
+<span style="font-size:12px;color:var(--gray);align-self:center">Suggestions :</span>
+<sc-for list="{{suggestions}}" as="s" hint-placeholder-count="4">
+<button style="border:1px solid var(--line);background:#FFFFFF;border-radius:999px;padding:8px 14px;font-size:13px;color:var(--ink);cursor:pointer">{{s.text}}</button>
+</sc-for>
+</div>
+
+<form style="display:flex;gap:10px;margin-top:auto">
+<label for="q" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Votre question</label>
+<input id="q" type="text" placeholder="Posez une question sur vos avis clients…" style="flex:1;min-width:0;border:1px solid var(--line);border-radius:12px;padding:14px 16px;font-size:15px;background:#FFFFFF;color:var(--ink)">
+<button type="button" style="border:0;background:var(--blue);color:#FFFFFF;border-radius:12px;padding:14px 22px;font-size:14px;font-weight:600;cursor:pointer">Envoyer</button>
+</form>
+</div>
+
+<aside style="flex:2 1 340px;min-width:0;background:#FFFFFF;border:1px solid var(--line);border-radius:16px;padding:22px;display:flex;flex-direction:column;gap:14px">
+<h2 style="margin:0;font-size:17px;color:var(--navy)">Sources utilisées</h2>
+<sc-for list="{{sources}}" as="s" hint-placeholder-count="4">
+<article style="border:1px solid var(--line);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:8px">
+<div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:12px;color:var(--gray)">
+<span style="padding:2px 9px;border-radius:999px;background:#EAF1FA;color:var(--navy);font-weight:700">{{s.n}}</span>
+<span>{{s.meta}}</span>
+<span style="margin-left:auto;font-weight:700;color:{{s.sc}}">Note {{s.score}}</span>
+</div>
+<p style="margin:0;font-size:14px;line-height:1.55;color:var(--ink)">« {{s.text}} »</p>
+<span style="font-size:12px;color:var(--gray)">Thème : {{s.theme}}</span>
+</article>
+</sc-for>
+<div style="background:#FBF1E6;border-radius:12px;padding:14px;font-size:12px;line-height:1.6;color:var(--brown)">
+<strong>Garde-fous :</strong> l'assistant refuse les questions hors périmètre, ne répond jamais sans source et masque les données personnelles. Chaque échange est enregistré dans le journal de gouvernance.
+</div>
+</aside>
+
+</section>
+
+<footer style="font-size:12px;color:var(--gray);line-height:1.6;padding-top:4px">Maquette : exemple de réponse illustratif. Le taux d'hallucination et la fidélité aux sources seront mesurés sur un jeu de questions de test (chapitre 4).</footer>
+
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1200}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const on = 'rgba(255,255,255,.16)';
+    const off = 'transparent';
+    const nav = [
+      { href: 'Main.dc.html', num: '1', label: 'Direction', on: false },
+      { href: 'Themes.dc.html', num: '2', label: 'Thèmes et aspects', on: false },
+      { href: 'Assistant.dc.html', num: '3', label: 'Pose ta question', on: true },
+      { href: 'Predictif.dc.html', num: '4', label: 'Prédictif', on: false },
+      { href: 'Plan.dc.html', num: '5', label: 'Plan d\'actions', on: false }
+    ].map((n) => ({ ...n, bg: n.on ? on : off, fw: n.on ? 600 : 400 }));
+    return {
+      nav,
+      suggestions: [
+        { text: 'Quels sont les 3 points forts de Vienne ?' },
+        { text: 'Que disent les clients du Wi-Fi à Londres ?' },
+        { text: 'Compare Paris et Milan sur le petit-déjeuner' },
+        { text: 'Quelles actions auraient le plus d\'impact ?' }
+      ],
+      sources: [
+        { n: '[1]', meta: 'Barcelone · 14/05/2017', score: '5,4', sc: '#C00000', text: 'Impossible de dormir à cause de la musique jusqu\'à 3 h du matin, même avec les fenêtres fermées.', theme: 'Bruit de nuit' },
+        { n: '[2]', meta: 'Barcelone · 02/06/2017', score: '6,3', sc: '#8B4513', text: 'Chambre propre et personnel adorable, mais le bruit de la rue rend les nuits difficiles.', theme: 'Bruit de nuit' },
+        { n: '[3]', meta: 'Barcelone · 21/06/2017', score: '5,8', sc: '#C00000', text: 'Prix très élevé pour une chambre sans vue et un petit-déjeuner moyen.', theme: 'Rapport qualité / prix' },
+        { n: '[4]', meta: 'Barcelone · 09/07/2017', score: '6,7', sc: '#8B4513', text: 'La climatisation est tombée en panne deux nuits de suite, il faisait plus de 28 degrés.', theme: 'Climatisation' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

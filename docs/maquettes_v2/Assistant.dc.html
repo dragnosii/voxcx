@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Pose ta question</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#0A0C0B;color:#EAF0EC;font-family:'Manrope',system-ui,sans-serif;font-size:15px;line-height:1.5}
+a{color:inherit;text-decoration:none}
+button,input{font-family:inherit}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.app{display:flex;flex-wrap:wrap;min-height:1100px;background:#0A0C0B}
+.side{flex:0 0 264px;background:#0F1311;border-right:1px solid #1E2522;padding:28px 20px;display:flex;flex-direction:column;gap:32px}
+.brand{display:flex;align-items:center;gap:12px}
+.brand .mk{flex:0 0 40px;width:40px;height:40px;border-radius:12px;background:#D4FF3A;display:flex;align-items:center;justify-content:center;color:#0A0C0B}
+.brand .nm{font-size:20px;font-weight:800;line-height:1.1}
+.brand .sb{font-size:12px;color:#93A09A}
+.nav{display:flex;flex-direction:column;gap:6px}
+.nav a{display:flex;align-items:center;gap:14px;height:46px;padding:0 14px;border-radius:12px;color:#B7C2BC;font-weight:600;font-size:15px}
+.nav a svg{flex:0 0 20px;width:20px;height:20px}
+.nav a.on{background:rgba(212,255,58,.10);color:#D4FF3A}
+.nav a:hover{background:#171D1A;color:#FFFFFF}
+.nav a.on:hover{background:rgba(212,255,58,.14);color:#D4FF3A}
+.mode{margin-top:auto;background:#151A17;border:1px solid #242B27;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:12px}
+.mode .t{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#93A09A}
+.mode .n{font-size:12px;color:#93A09A;line-height:1.5}
+.seg{display:flex;background:#0A0C0B;border-radius:12px;padding:4px;gap:4px}
+.seg button{flex:1;height:36px;border:0;border-radius:9px;background:transparent;color:#93A09A;font-weight:700;font-size:13px;cursor:pointer}
+.seg button.on{background:#D4FF3A;color:#0A0C0B}
+.main{flex:999 1 640px;min-width:0;padding:36px 44px 56px;display:flex;flex-direction:column;gap:28px}
+.head{display:flex;flex-wrap:wrap;gap:20px;justify-content:space-between;align-items:center}
+.head h1{margin:0;font-size:34px;font-weight:800;line-height:1.15}
+.head p{margin:6px 0 0;color:#93A09A;font-size:15px}
+.tools{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.chip{display:flex;align-items:center;gap:10px;height:44px;padding:0 16px;border-radius:12px;background:#151A17;border:1px solid #242B27;color:#EAF0EC;font-weight:600;font-size:14px}
+.chip svg{flex:0 0 18px;width:18px;height:18px;color:#93A09A}
+.row{display:flex;flex-wrap:wrap;gap:24px;align-items:stretch}
+.card{background:#151A17;border:1px solid #242B27;border-radius:20px;padding:28px;animation:rise .6s both;min-width:0}
+.card h2{margin:0 0 4px;font-size:19px;font-weight:700}
+.card .sub{color:#93A09A;font-size:14px;margin:0 0 22px}
+.pill{display:inline-flex;align-items:center;height:28px;padding:0 12px;border-radius:999px;font-size:13px;font-weight:700}
+.p-ok{background:rgba(91,228,155,.14);color:#5BE49B}
+.p-ko{background:rgba(255,107,107,.14);color:#FF6B6B}
+.p-info{background:rgba(61,232,240,.12);color:#3DE8F0}
+.p-lime{background:rgba(212,255,58,.14);color:#D4FF3A}
+.note{color:#93A09A;font-size:13px;line-height:1.6}
+.q{align-self:flex-end;max-width:78%;background:#D4FF3A;color:#0A0C0B;border-radius:20px 20px 6px 20px;padding:16px 22px;font-weight:700;font-size:16px}
+.a{align-self:flex-start;max-width:92%;background:#1B211E;border:1px solid #242B27;border-radius:20px 20px 20px 6px;padding:24px 26px;display:flex;flex-direction:column;gap:16px}
+.a p{margin:0;font-size:16px;line-height:1.7}
+.a ol{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:10px;font-size:16px;line-height:1.65}
+.cite{display:inline-block;padding:0 8px;border-radius:6px;background:rgba(61,232,240,.14);color:#3DE8F0;font-weight:800;font-size:13px}
+.sug{display:inline-flex;align-items:center;height:40px;padding:0 18px;border-radius:999px;border:1px solid #2C3531;color:#B7C2BC;font-weight:600;font-size:14px;background:transparent}
+.in{display:flex;gap:12px;align-items:center;margin-top:auto}
+.in input{flex:1;min-width:0;height:56px;border-radius:16px;border:1px solid #2C3531;background:#0F1311;color:#EAF0EC;padding:0 22px;font-size:16px}
+.in button{flex:0 0 56px;height:56px;border-radius:16px;border:0;background:#D4FF3A;color:#0A0C0B;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.src{padding:18px 0;border-top:1px solid #242B27}
+.src:first-of-type{border-top:0;padding-top:0}
+.src .mt{display:flex;flex-wrap:wrap;gap:10px;align-items:center;color:#93A09A;font-size:13px;margin-bottom:8px}
+.src p{margin:0;font-size:15px;line-height:1.6;color:#D5DDD8}
+.btn2{display:inline-flex;align-items:center;height:40px;padding:0 18px;border-radius:12px;border:1px solid #2C3531;background:transparent;color:#EAF0EC;font-weight:700;font-size:14px;cursor:pointer}
+.btn2.g{background:rgba(91,228,155,.14);border-color:transparent;color:#5BE49B}
+</style>
+</helmet>
+<div class="app">
+
+<aside class="side">
+<div class="brand">
+<div class="mk"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 16l5-6 4 4 7-9"/></svg></div>
+<div><div class="nm">VoxCX</div><div class="sb">Écoute client · IA</div></div>
+</div>
+<nav class="nav" aria-label="Navigation principale">
+<a href="Main.dc.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg><span>Accueil</span></a>
+<a href="Themes.dc.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7l8-4 8 4-8 4-8-4z"/><path d="M4 12l8 4 8-4"/><path d="M4 17l8 4 8-4"/></svg><span>Thèmes</span></a>
+<a class="on" href="Assistant.dc.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg><span>Pose ta question</span></a>
+<a href="Predictif.dc.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg><span>Prédictif</span></a>
+<a href="Plan.dc.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11"/><path d="M3.5 6l1.5 1.5L7 5M3.5 12l1.5 1.5L7 11M3.5 18l1.5 1.5L7 17"/></svg><span>Plan d'actions</span></a>
+</nav>
+<div class="mode">
+<div class="t">Mode IA</div>
+<div class="seg"><button class="on">Local</button><button>En ligne</button></div>
+<div class="n">Local : gratuit, sans Internet. En ligne : Claude, réponses plus riches. Bascule automatique si le réseau tombe.</div>
+</div>
+</aside>
+
+<main class="main">
+<header class="head">
+<div>
+<h1>Pose ta question</h1>
+<p>Un assistant qui répond uniquement à partir des avis, en citant ses sources</p>
+</div>
+<div class="tools">
+<div class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16M16 9h2a2 2 0 0 1 2 2v10M2 21h20M8 8h4M8 12h4M8 16h4"/></svg><span>Tous les hôtels</span></div>
+<div class="chip"><span>Avis négatifs seulement</span></div>
+</div>
+</header>
+
+<section class="row" style="flex:1">
+<div class="card" style="flex:8 1 560px;display:flex;flex-direction:column;gap:22px;animation-delay:.05s">
+<div class="q">Pourquoi les clients se plaignent-ils du bruit ?</div>
+<div class="a">
+<div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center"><span class="pill p-lime">Réponse (exemple)</span><span class="pill p-info">Mode local</span><span class="note">8 avis consultés · 2,1 s · confiance élevée</span></div>
+<p>Le bruit est cité dans 80 commentaires, dont 65 % sont négatifs. Les avis consultés montrent trois sources de gêne :</p>
+<ol>
+<li><b>La musique et l'animation tard le soir</b>, qui empêchent de dormir <span class="cite">[1]</span> <span class="cite">[2]</span></li>
+<li><b>Les chambres côté rue</b>, où le bruit extérieur passe malgré les fenêtres fermées <span class="cite">[3]</span></li>
+<li><b>Les équipements techniques</b> (climatisation, ascenseur) entendus dans la chambre <span class="cite">[4]</span></li>
+</ol>
+<div style="display:flex;flex-wrap:wrap;gap:12px"><button class="btn2 g">Réponse correcte</button><button class="btn2">Signaler une erreur</button><button class="btn2">Créer une action</button></div>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center">
+<span class="note">Essayer :</span>
+<span class="sug">Points forts de Kenzi Menara Palace ?</span><span class="sug">Que disent les clients du petit-déjeuner ?</span><span class="sug">Problèmes de propreté ?</span>
+</div>
+<div class="in"><input type="text" aria-label="Votre question" placeholder="Posez une question sur vos avis clients…"><button aria-label="Envoyer"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></div>
+</div>
+
+<aside class="card" style="flex:4 1 340px;animation-delay:.12s">
+<h2>Sources utilisées</h2>
+<p class="sub">Avis réels sur lesquels repose la réponse</p>
+<div class="src"><div class="mt"><span class="cite">[1]</span><span>Kenzi Solazur · 02/09/2026</span><span style="margin-left:auto;color:#FF6B6B;font-weight:800">2/5</span></div><p>Exemple de source : extrait d'un avis réel affiché ici avec la date, la note et l'hôtel.</p></div>
+<div class="src"><div class="mt"><span class="cite">[2]</span><span>Kenzi Tower · 21/08/2026</span><span style="margin-left:auto;color:#FFB454;font-weight:800">3/5</span></div><p>Exemple de source : l'utilisateur peut vérifier chaque phrase de la réponse.</p></div>
+<div class="src"><div class="mt"><span class="cite">[3]</span><span>Kenzi Europa · 11/09/2026</span><span style="margin-left:auto;color:#FF6B6B;font-weight:800">1/5</span></div><p>Exemple de source : chaque citation renvoie à un avis précis.</p></div>
+<div style="background:#0F1311;border-radius:14px;padding:16px;margin-top:6px"><span class="note">Garde-fous : refus de répondre sans avis pertinent, aucune donnée inventée, chaque échange enregistré dans le journal de gouvernance.</span></div>
+</aside>
+</section>
+
+<footer class="note">Mode local : réponse construite à partir des avis retrouvés, sans génération de texte. Mode en ligne : Claude rédige la réponse à partir des mêmes avis.</footer>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1100}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

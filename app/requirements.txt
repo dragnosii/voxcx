@@ -1,0 +1,16 @@
+# Data Analyse (VoxCX) : dépendances de l'application (Python 3.14, testé le 17/10/2026)
+# Installation : python -m venv .venv  puis  .venv\Scripts\pip install -r requirements.txt
+starlette==1.8.0
+uvicorn==0.54.0
+pandas==3.0.6
+numpy==2.5.4
+scipy==1.18.1
+scikit-learn==1.9.1
+shap==0.54.1
+sentence-transformers==6.1.0
+transformers==5.20.1
+torch==2.14.1
+sentencepiece==0.2.2
+anthropic==1.15.0
+python-dotenv==1.2.4
+openpyxl==3.1.5

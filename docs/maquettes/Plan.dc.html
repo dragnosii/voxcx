@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Plan d'actions et simulateur</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#1F3864;--blue:#2E74B5;--brown:#8B4513;--green:#0F5132;--red:#C00000;--gray:#595959;--line:#DDE3EC;--bg:#F3F5F9;--ink:#1B2433}
+body{margin:0;font-family:'IBM Plex Sans',system-ui,sans-serif;background:#F3F5F9;color:#1B2433}
+a{color:inherit;text-decoration:none}
+a:hover{color:#FFFFFF}
+button{font-family:inherit}
+</style>
+</helmet>
+<div style="width:100%;min-height:1500px;display:flex;flex-wrap:wrap;background:var(--bg)">
+
+<aside style="flex:0 0 248px;background:var(--navy);color:#FFFFFF;padding:28px 18px;box-sizing:border-box;display:flex;flex-direction:column;gap:28px">
+<div style="display:flex;align-items:center;gap:10px">
+<svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="8" fill="#2E74B5"/><path d="M7 20 L12 12 L17 17 L25 7" fill="none" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+<div style="display:flex;flex-direction:column;line-height:1.1"><span style="font-weight:700;font-size:18px">VoxCX</span><span style="font-size:11px;opacity:.75">Écoute client · IA</span></div>
+</div>
+<nav aria-label="Navigation principale" style="display:flex;flex-direction:column;gap:4px">
+<sc-for list="{{nav}}" as="n" hint-placeholder-count="5">
+<a href="{{n.href}}" style="display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:10px;font-size:14px;font-weight:{{n.fw}};background:{{n.bg}};color:#FFFFFF">
+<span style="width:22px;height:22px;border-radius:6px;background:rgba(255,255,255,.16);display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:600">{{n.num}}</span>
+<span>{{n.label}}</span>
+</a>
+</sc-for>
+</nav>
+<div style="margin-top:auto;display:flex;flex-direction:column;gap:14px">
+<div style="background:rgba(255,255,255,.08);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px">
+<span style="font-size:11px;letter-spacing:.06em;text-transform:uppercase;opacity:.7">Mode IA</span>
+<div style="display:flex;gap:6px">
+<button style="flex:1;border:0;border-radius:8px;padding:9px 6px;font-size:12px;font-weight:600;background:#FFFFFF;color:var(--navy);cursor:pointer">En ligne · Claude</button>
+<button style="flex:1;border:1px solid rgba(255,255,255,.35);border-radius:8px;padding:9px 6px;font-size:12px;font-weight:500;background:transparent;color:#FFFFFF;cursor:pointer">Local · gratuit</button>
+</div>
+<span style="font-size:11px;line-height:1.4;opacity:.75">Bascule automatique en local si le réseau ou l'API tombe.</span>
+</div>
+<span style="font-size:11px;line-height:1.5;opacity:.7">Jeu de données : 515K Hotel Reviews (Booking.com), 6 sites, avis du 08/2015 au 07/2017.</span>
+</div>
+</aside>
+
+<main style="flex:999 1 560px;min-width:0;padding:30px 38px 48px;box-sizing:border-box;display:flex;flex-direction:column;gap:24px">
+
+<header style="display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end;justify-content:space-between">
+<div style="display:flex;flex-direction:column;gap:4px">
+<h1 style="margin:0;font-size:28px;font-weight:700;color:var(--navy)">Plan d'actions et simulateur</h1>
+<span style="font-size:14px;color:var(--gray)">De l'analyse à la décision : prioriser, simuler, valider, suivre</span>
+</div>
+<button style="border:0;background:var(--blue);border-radius:10px;padding:10px 16px;font-size:13px;font-weight:600;color:#FFFFFF;cursor:pointer">Générer des recommandations (IA)</button>
+</header>
+
+<section style="display:flex;flex-wrap:wrap;gap:20px;align-items:stretch">
+
+<div style="flex:1 1 420px;min-width:0;background:#FFFFFF;border:1px solid var(--line);border-radius:16px;padding:22px;display:flex;flex-direction:column;gap:14px">
+<h2 style="margin:0;font-size:17px;color:var(--navy)">Matrice impact × effort</h2>
+<div style="position:relative;height:340px;border-radius:12px;overflow:hidden;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:3px;background:#FFFFFF">
+<div style="background:#E6F2EC;padding:10px 12px;font-size:12px;font-weight:700;color:var(--green)">Gains rapides</div>
+<div style="background:#EAF1FA;padding:10px 12px;font-size:12px;font-weight:700;color:var(--navy)">Projets structurants</div>
+<div style="background:#F1F3F7;padding:10px 12px;font-size:12px;font-weight:700;color:var(--gray)">Améliorations marginales</div>
+<div style="background:#FBF1E6;padding:10px 12px;font-size:12px;font-weight:700;color:var(--brown)">À éviter</div>
+<sc-for list="{{bubbles}}" as="b" hint-placeholder-count="5">
+<div style="position:absolute;left:{{b.x}}%;top:{{b.y}}%;transform:translate(-50%,-50%);padding:6px 12px;border-radius:999px;font-size:12px;font-weight:600;background:{{b.bg}};color:#FFFFFF;white-space:nowrap">{{b.t}}</div>
+</sc-for>
+</div>
+<div style="display:flex;justify-content:space-between;font-size:12px;color:var(--gray)"><span>Effort faible</span><span>Effort élevé</span></div>
+<span style="font-size:12px;color:var(--gray)">Axe vertical : impact attendu sur la note (haut = fort).</span>
+</div>
+
+<div style="flex:1 1 420px;min-width:0;background:#FFFFFF;border:1px solid var(--line);border-radius:16px;padding:22px;display:flex;flex-direction:column;gap:16px">
+<h2 style="margin:0;font-size:17px;color:var(--navy)">Simulateur « et si ? »</h2>
+<span style="font-size:14px;color:var(--ink)">Action testée : <strong>Double vitrage et fermeture des bars voisins à 1 h, Barcelone</strong></span>
+<sc-for list="{{sliders}}" as="s" hint-placeholder-count="3">
+<div style="display:flex;flex-direction:column;gap:6px">
+<div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:var(--gray)">{{s.label}}</span><span style="font-weight:700;color:var(--navy)">{{s.value}}</span></div>
+<div style="height:8px;border-radius:4px;background:#E9EDF4;position:relative"><div style="height:100%;width:{{s.w}}%;background:var(--blue);border-radius:4px"></div><div style="position:absolute;top:-5px;left:{{s.w}}%;width:18px;height:18px;margin-left:-9px;border-radius:50%;background:#FFFFFF;border:3px solid var(--blue);box-sizing:border-box"></div></div>
+</div>
+</sc-for>
+<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px">
+<sc-for list="{{results}}" as="r" hint-placeholder-count="3">
+<div style="background:{{r.bg}};border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:2px">
+<span style="font-size:22px;font-weight:700;color:{{r.fg}};line-height:1.1">{{r.v}}</span>
+<span style="font-size:12px;color:var(--gray)">{{r.l}}</span>
+</div>
+</sc-for>
+</div>
+<span style="font-size:12px;color:var(--gray);line-height:1.5">Estimation à partir de la relation observée entre thèmes et notes dans le jeu de données. Hypothèses visibles et modifiables.</span>
+</div>
+
+</section>
+
+<section style="background:#FFFFFF;border:1px solid var(--line);border-radius:16px;padding:22px;display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between;align-items:baseline">
+<h2 style="margin:0;font-size:17px;color:var(--navy)">Plan d'actions (méthode QQOQCCP)</h2>
+<span style="font-size:12px;color:var(--gray)">Rien n'est appliqué sans validation d'un responsable</span>
+</div>
+<div style="overflow-x:auto">
+<table style="width:100%;min-width:860px;border-collapse:collapse;font-size:14px">
+<thead><tr style="text-align:left;color:var(--gray);font-size:12px;text-transform:uppercase;letter-spacing:.04em">
+<th style="padding:8px 8px 10px 0;font-weight:600">Quoi</th><th style="padding:8px;font-weight:600">Pourquoi</th><th style="padding:8px;font-weight:600">Qui</th><th style="padding:8px;font-weight:600">Où</th><th style="padding:8px;font-weight:600">Quand</th><th style="padding:8px;font-weight:600">Coût</th><th style="padding:8px;font-weight:600">KPI cible</th><th style="padding:8px;font-weight:600">Statut</th>
+</tr></thead>
+<tbody>
+<sc-for list="{{actions}}" as="a" hint-placeholder-count="4">
+<tr style="border-top:1px solid var(--line)">
+<td style="padding:12px 8px 12px 0;font-weight:600">{{a.what}}</td><td style="padding:12px 8px;color:var(--gray)">{{a.why}}</td><td style="padding:12px 8px">{{a.who}}</td><td style="padding:12px 8px">{{a.where}}</td><td style="padding:12px 8px">{{a.when}}</td><td style="padding:12px 8px">{{a.cost}}</td><td style="padding:12px 8px">{{a.kpi}}</td>
+<td style="padding:12px 8px"><span style="padding:4px 10px;border-radius:999px;font-size:12px;font-weight:700;background:{{a.sbg}};color:{{a.sfg}}">{{a.status}}</span></td>
+</tr>
+</sc-for>
+</tbody>
+</table>
+</div>
+</section>
+
+<section style="display:flex;flex-wrap:wrap;gap:20px;align-items:stretch">
+
+<div style="flex:1 1 420px;min-width:0;background:#FFFFFF;border:1px solid var(--line);border-radius:16px;padding:22px;display:flex;flex-direction:column;gap:14px">
+<h2 style="margin:0;font-size:17px;color:var(--navy)">Expérience contrôlée : l'outil fait-il gagner du temps ?</h2>
+<span style="font-size:13px;color:var(--gray);line-height:1.5">3 testeurs analysent 200 avis, d'abord à la main, puis avec l'outil.</span>
+<sc-for list="{{experiment}}" as="e" hint-placeholder-count="3">
+<div style="display:flex;flex-direction:column;gap:6px">
+<div style="display:flex;justify-content:space-between;font-size:13px"><span>{{e.label}}</span><span style="font-weight:700">{{e.value}}</span></div>
+<div style="height:12px;border-radius:6px;background:#E9EDF4;overflow:hidden"><div style="height:100%;width:{{e.w}}%;background:{{e.c}}"></div></div>
+</div>
+</sc-for>
+<span style="font-size:12px;color:var(--gray);line-height:1.5">Mesure réelle à réaliser et à consigner dans le rapport (chapitre 4). Valeurs de la maquette illustratives.</span>
+</div>
+
+<div style="flex:1 1 420px;min-width:0;background:#FFFFFF;border:1px solid var(--line);border-radius:16px;padding:22px;display:flex;flex-direction:column;gap:12px">
+<h2 style="margin:0;font-size:17px;color:var(--navy)">Journal de gouvernance IA</h2>
+<sc-for list="{{journal}}" as="j" hint-placeholder-count="4">
+<div style="display:flex;gap:12px;align-items:flex-start;font-size:13px;line-height:1.5;padding:10px 0;border-top:1px solid var(--line)">
+<span style="flex:0 0 118px;color:var(--gray)">{{j.when}}</span>
+<span style="flex:1">{{j.what}}</span>
+<span style="padding:2px 10px;border-radius:999px;font-size:12px;font-weight:700;background:{{j.bg}};color:{{j.fg}}">{{j.who}}</span>
+</div>
+</sc-for>
+</div>
+
+</section>
+
+<footer style="font-size:12px;color:var(--gray);line-height:1.6;padding-top:4px">Maquette : valeurs illustratives. Conduite du changement structurée avec le modèle de Kotter (chapitre 4) ; conformité RGPD et AI Act traitée en annexe.</footer>
+
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1500}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const on = 'rgba(255,255,255,.16)';
+    const off = 'transparent';
+    const nav = [
+      { href: 'Main.dc.html', num: '1', label: 'Direction', on: false },
+      { href: 'Themes.dc.html', num: '2', label: 'Thèmes et aspects', on: false },
+      { href: 'Assistant.dc.html', num: '3', label: 'Pose ta question', on: false },
+      { href: 'Predictif.dc.html', num: '4', label: 'Prédictif', on: false },
+      { href: 'Plan.dc.html', num: '5', label: 'Plan d\'actions', on: true }
+    ].map((n) => ({ ...n, bg: n.on ? on : off, fw: n.on ? 600 : 400 }));
+    return {
+      nav,
+      bubbles: [
+        { t: 'Réponse sous 48 h', x: 24, y: 30, bg: '#0F5132' },
+        { t: 'Formation accueil', x: 36, y: 40, bg: '#0F5132' },
+        { t: 'Double vitrage', x: 74, y: 28, bg: '#1F3864' },
+        { t: 'Rénovation chambres', x: 82, y: 44, bg: '#1F3864' },
+        { t: 'Wi-Fi renforcé', x: 30, y: 70, bg: '#595959' }
+      ],
+      sliders: [
+        { label: 'Part des avis « bruit » corrigés', value: '70 %', w: 70 },
+        { label: 'Coût de l\'action', value: '18 000 €', w: 36 },
+        { label: 'Délai de mise en œuvre', value: '3 mois', w: 30 }
+      ],
+      results: [
+        { v: '+0,3 pt', l: 'Note de Barcelone', bg: '#E6F2EC', fg: '#0F5132' },
+        { v: '+11 pts', l: 'Part de clients satisfaits', bg: '#EAF1FA', fg: '#1F3864' },
+        { v: '9 mois', l: 'Retour sur investissement', bg: '#FBF1E6', fg: '#8B4513' }
+      ],
+      actions: [
+        { what: 'Double vitrage', why: 'Bruit de nuit', who: 'Direction technique', where: 'Barcelone', when: 'T+3 mois', cost: '18 000 €', kpi: 'Mentions bruit −50 %', status: 'À valider', sbg: '#FBF1E6', sfg: '#8B4513' },
+        { what: 'Réponse aux avis sous 48 h', why: 'Image et fidélité', who: 'Responsables de site', where: '6 sites', when: 'Immédiat', cost: '0 €', kpi: 'Taux de réponse 90 %', status: 'Validée', sbg: '#E6F2EC', sfg: '#0F5132' },
+        { what: 'Renforcer le Wi-Fi', why: 'Thème émergent', who: 'DSI', where: 'Londres', when: 'T+1 mois', cost: '4 500 €', kpi: 'Mentions Wi-Fi −70 %', status: 'En cours', sbg: '#EAF1FA', sfg: '#1F3864' },
+        { what: 'Formation accueil', why: 'Attente à la réception', who: 'RH', where: 'Amsterdam', when: 'T+2 mois', cost: '2 000 €', kpi: 'Attente < 5 min', status: 'Refusée', sbg: '#FBE9E7', sfg: '#C00000' }
+      ],
+      experiment: [
+        { label: 'Analyse manuelle de 200 avis', value: '3 h 40', w: 100, c: '#8E99AB' },
+        { label: 'Avec la plateforme', value: '35 min', w: 16, c: '#0F5132' },
+        { label: 'Accord avec les avis étiquetés', value: '91 %', w: 91, c: '#2E74B5' }
+      ],
+      journal: [
+        { when: '24/07/2017 08:00', what: 'Briefing du lundi généré (212 avis, 4 sources)', who: 'IA', bg: '#EAF1FA', fg: '#1F3864' },
+        { when: '24/07/2017 09:12', what: 'Briefing validé sans modification', who: 'Humain', bg: '#E6F2EC', fg: '#0F5132' },
+        { when: '24/07/2017 09:40', what: 'Recommandation « Double vitrage » proposée', who: 'IA', bg: '#EAF1FA', fg: '#1F3864' },
+        { when: '24/07/2017 10:05', what: 'Action refusée : formation accueil, budget insuffisant', who: 'Humain', bg: '#E6F2EC', fg: '#0F5132' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

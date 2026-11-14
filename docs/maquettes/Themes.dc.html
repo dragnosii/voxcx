@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Analyse des thèmes</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#1F3864;--blue:#2E74B5;--brown:#8B4513;--green:#0F5132;--red:#C00000;--gray:#595959;--line:#DDE3EC;--bg:#F3F5F9;--ink:#1B2433}
+body{margin:0;font-family:'IBM Plex Sans',system-ui,sans-serif;background:#F3F5F9;color:#1B2433}
+a{color:inherit;text-decoration:none}
+a:hover{color:#FFFFFF}
+button{font-family:inherit}
+</style>
+</helmet>
+<div style="width:100%;min-height:1400px;display:flex;flex-wrap:wrap;background:var(--bg)">
+
+<aside style="flex:0 0 248px;background:var(--navy);color:#FFFFFF;padding:28px 18px;box-sizing:border-box;display:flex;flex-direction:column;gap:28px">
+<div style="display:flex;align-items:center;gap:10px">
+<svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="8" fill="#2E74B5"/><path d="M7 20 L12 12 L17 17 L25 7" fill="none" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+<div style="display:flex;flex-direction:column;line-height:1.1"><span style="font-weight:700;font-size:18px">VoxCX</span><span style="font-size:11px;opacity:.75">Écoute client · IA</span></div>
+</div>
+<nav aria-label="Navigation principale" style="display:flex;flex-direction:column;gap:4px">
+<sc-for list="{{nav}}" as="n" hint-placeholder-count="5">
+<a href="{{n.href}}" style="display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:10px;font-size:14px;font-weight:{{n.fw}};background:{{n.bg}};color:#FFFFFF">
+<span style="width:22px;height:22px;border-radius:6px;background:rgba(255,255,255,.16);display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:600">{{n.num}}</span>
+<span>{{n.label}}</span>
+</a>
+</sc-for>
+</nav>
+<div style="margin-top:auto;display:flex;flex-direction:column;gap:14px">
+<div style="background:rgba(255,255,255,.08);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px">
+<span style="font-size:11px;letter-spacing:.06em;text-transform:uppercase;opacity:.7">Mode IA</span>
+<div style="display:flex;gap:6px">
+<button style="flex:1;border:0;border-radius:8px;padding:9px 6px;font-size:12px;font-weight:600;background:#FFFFFF;color:var(--navy);cursor:pointer">En ligne · Claude</button>
+<button style="flex:1;border:1px solid rgba(255,255,255,.35);border-radius:8px;padding:9px 6px;font-size:12px;font-weight:500;background:transparent;color:#FFFFFF;cursor:pointer">Local · gratuit</button>
+</div>
+<span style="font-size:11px;line-height:1.4;opacity:.75">Bascule automatique en local si le réseau ou l'API tombe.</span>
+</div>
+<span style="font-size:11px;line-height:1.5;opacity:.7">Jeu de données : 515K Hotel Reviews (Booking.com), 6 sites, avis du 08/2015 au 07/2017.</span>
+</div>
+</aside>
+
+<main style="flex:999 1 560px;min-width:0;padding:30px 38px 48px;box-sizing:border-box;display:flex;flex-direction:column;gap:24px">
+
+<header style="display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end;justify-content:space-between">
+<div style="display:flex;flex-direction:column;gap:4px">
+<h1 style="margin:0;font-size:28px;font-weight:700;color:var(--navy)">Analyse des thèmes et des aspects</h1>
+<span style="font-size:14px;color:var(--gray)">Sentiment par aspect et priorisation des problèmes, site par site</span>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:10px">
+<button style="border:1px solid var(--line);background:#FFFFFF;border-radius:10px;padding:10px 14px;font-size:13px;color:var(--ink);cursor:pointer">Période : 01/08/2015 – 31/07/2017</button>
+<button style="border:1px solid var(--line);background:#FFFFFF;border-radius:10px;padding:10px 14px;font-size:13px;color:var(--ink);cursor:pointer">Sites : 6 sur 6</button>
+</div>
+</header>
+
+<section style="background:#FFFFFF;border:1px solid var(--line);border-radius:16px;padding:22px;display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between;align-items:baseline">
+<h2 style="margin:0;font-size:17px;color:var(--navy)">Carte de chaleur : score de sentiment par aspect et par site</h2>
+<span style="font-size:12px;color:var(--gray)">De 0 (très négatif) à 10 (très positif)</span>
+</div>
+<div style="overflow-x:auto">
+<div style="min-width:640px;display:grid;grid-template-columns:150px repeat(6,minmax(0,1fr));gap:6px;align-items:center">
+<span></span>
+<sc-for list="{{siteHeads}}" as="h" hint-placeholder-count="6">
+<span style="font-size:13px;font-weight:600;color:var(--navy);text-align:center">{{h.name}}</span>
+</sc-for>
+<sc-for list="{{cells}}" as="c" hint-placeholder-count="42">
+<div style="{{c.style}}">{{c.text}}</div>
+</sc-for>
+</div>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:14px;font-size:12px;color:var(--gray);align-items:center">
+<span style="display:inline-flex;align-items:center;gap:6px"><span style="width:14px;height:14px;border-radius:4px;background:#C00000;display:inline-block"></span>Critique (&lt; 6,5)</span>
+<span style="display:inline-flex;align-items:center;gap:6px"><span style="width:14px;height:14px;border-radius:4px;background:#E2A66B;display:inline-block"></span>À surveiller</span>
+<span style="display:inline-flex;align-items:center;gap:6px"><span style="width:14px;height:14px;border-radius:4px;background:#3F8F6B;display:inline-block"></span>Solide (&gt; 8,5)</span>
+</div>
+</section>
+
+<section style="display:flex;flex-wrap:wrap;gap:20px;align-items:stretch">
+
+<div style="flex:3 1 560px;min-width:0;background:#FFFFFF;border:1px solid var(--line);border-radius:16px;padding:22px;display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between;align-items:baseline">
+<h2 style="margin:0;font-size:17px;color:var(--navy)">Thèmes classés par priorité</h2>
+<span style="font-size:12px;color:var(--gray)">Priorité = fréquence × gravité × tendance</span>
+</div>
+<div style="overflow-x:auto">
+<table style="width:100%;min-width:560px;border-collapse:collapse;font-size:14px">
+<thead>
+<tr style="text-align:left;color:var(--gray);font-size:12px;text-transform:uppercase;letter-spacing:.04em">
+<th style="padding:8px 8px 10px 0;font-weight:600">Thème</th><th style="padding:8px;font-weight:600">Mentions</th><th style="padding:8px;font-weight:600">Gravité</th><th style="padding:8px;font-weight:600">Tendance</th><th style="padding:8px;font-weight:600;min-width:140px">Priorité</th>
+</tr>
+</thead>
+<tbody>
+<sc-for list="{{themes}}" as="t" hint-placeholder-count="6">
+<tr style="border-top:1px solid var(--line)">
+<td style="padding:12px 8px 12px 0;font-weight:600">{{t.name}}<div style="font-weight:400;font-size:12px;color:var(--gray)">{{t.site}}</div></td>
+<td style="padding:12px 8px">{{t.count}}</td>
+<td style="padding:12px 8px"><span style="padding:3px 10px;border-radius:999px;font-size:12px;font-weight:600;background:{{t.gbg}};color:{{t.gfg}}">{{t.grav}}</span></td>
+<td style="padding:12px 8px;font-weight:600;color:{{t.tc}}">{{t.trend}}</td>
+<td style="padding:12px 8px"><div style="display:flex;align-items:center;gap:10px"><div style="flex:1;height:10px;border-radius:5px;background:#E9EDF4;overflow:hidden"><div style="height:100%;width:{{t.p}}%;background:{{t.pc}}"></div></div><span style="font-weight:700;min-width:26px;text-align:right">{{t.p}}</span></div></td>
+</tr>
+</sc-for>
+</tbody>
+</table>
+</div>
+</div>
+
+<div style="flex:2 1 340px;min-width:0;background:#FFFFFF;border:1px solid var(--line);border-radius:16px;padding:22px;display:flex;flex-direction:column;gap:14px">
+<h2 style="margin:0;font-size:17px;color:var(--navy)">Lecture d'un avis par l'IA</h2>
+<div style="display:flex;flex-wrap:wrap;gap:8px;font-size:12px;color:var(--gray)">
+<span>Barcelone</span><span>·</span><span>14/05/2017</span><span>·</span><span>Note du client : 5,4</span>
+</div>
+<p style="margin:0;font-size:15px;line-height:1.8">
+<span style="background:#E6F2EC;padding:2px 4px;border-radius:4px">Emplacement idéal, à deux pas des Ramblas</span>, mais
+<span style="background:#FBE9E7;padding:2px 4px;border-radius:4px">impossible de dormir à cause de la musique jusqu'à 3 h</span>.
+<span style="background:#E6F2EC;padding:2px 4px;border-radius:4px">Le personnel de la réception a été adorable</span>, et
+<span style="background:#FBF1E6;padding:2px 4px;border-radius:4px">le petit-déjeuner était correct sans plus</span>.
+</p>
+<div style="display:flex;flex-direction:column;gap:8px">
+<sc-for list="{{aspects}}" as="a" hint-placeholder-count="4">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:13px;padding:8px 12px;border-radius:10px;background:{{a.bg}}">
+<span style="font-weight:600;color:var(--ink)">{{a.name}}</span>
+<span style="font-weight:700;color:{{a.fg}}">{{a.label}}</span>
+</div>
+</sc-for>
+</div>
+<span style="font-size:12px;color:var(--gray);line-height:1.5">Phrase par phrase, l'IA relie un aspect à un sentiment. Le client reste anonyme (aucune donnée personnelle affichée).</span>
+</div>
+
+</section>
+
+<footer style="font-size:12px;color:var(--gray);line-height:1.6;padding-top:4px">Maquette : valeurs illustratives. Comparaison de modèles de sentiment et de thèmes (modèle local, LLM en ligne) présentée au chapitre 2 du rapport, avec indication de la source et de l'usage de l'IA.</footer>
+
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1400}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const on = 'rgba(255,255,255,.16)';
+    const off = 'transparent';
+    const nav = [
+      { href: 'Main.dc.html', num: '1', label: 'Direction', on: false },
+      { href: 'Themes.dc.html', num: '2', label: 'Thèmes et aspects', on: true },
+      { href: 'Assistant.dc.html', num: '3', label: 'Pose ta question', on: false },
+      { href: 'Predictif.dc.html', num: '4', label: 'Prédictif', on: false },
+      { href: 'Plan.dc.html', num: '5', label: 'Plan d\'actions', on: false }
+    ].map((n) => ({ ...n, bg: n.on ? on : off, fw: n.on ? 600 : 400 }));
+
+    const sites = ['Vienne', 'Amsterdam', 'Paris', 'Milan', 'Londres', 'Barcelone'];
+    const rows = [
+      ['Emplacement', [9.0, 8.8, 8.6, 8.4, 8.2, 8.9]],
+      ['Personnel', [9.1, 8.7, 8.2, 8.1, 7.9, 7.6]],
+      ['Propreté', [8.9, 8.5, 8.3, 8.2, 7.8, 7.1]],
+      ['Petit-déjeuner', [9.1, 8.0, 7.9, 9.1, 7.5, 7.2]],
+      ['Bruit', [8.4, 7.6, 7.4, 7.9, 7.0, 5.6]],
+      ['Rapport qualité / prix', [8.1, 7.5, 7.0, 7.4, 6.6, 6.4]],
+      ['Wi-Fi', [8.2, 8.0, 7.8, 7.7, 6.2, 7.5]]
+    ];
+    const colorFor = (v) => (v < 6.5 ? '#C00000' : v < 7.5 ? '#E2A66B' : v < 8.5 ? '#9CC9B0' : '#3F8F6B');
+    const fgFor = (v) => (v < 6.5 || v >= 8.5 ? '#FFFFFF' : '#1B2433');
+    const cells = [];
+    rows.forEach((r) => {
+      cells.push({ style: 'font-size:13px;font-weight:600;color:#1F3864', text: r[0] });
+      r[1].forEach((v) => {
+        cells.push({
+          style: 'height:40px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;background:' + colorFor(v) + ';color:' + fgFor(v),
+          text: String(v).replace('.', ',')
+        });
+      });
+    });
+
+    return {
+      nav,
+      siteHeads: sites.map((s) => ({ name: s })),
+      cells,
+      themes: [
+        { name: 'Bruit de nuit', site: 'Barcelone · Londres', count: 148, grav: 'Élevée', gbg: '#FBE9E7', gfg: '#C00000', trend: '+38 %', tc: '#C00000', p: 92, pc: '#C00000' },
+        { name: 'Rapport qualité / prix', site: 'Londres · Paris', count: 203, grav: 'Moyenne', gbg: '#FBF1E6', gfg: '#8B4513', trend: '+12 %', tc: '#8B4513', p: 71, pc: '#8B4513' },
+        { name: 'Wi-Fi instable', site: 'Londres', count: 41, grav: 'Moyenne', gbg: '#FBF1E6', gfg: '#8B4513', trend: 'Nouveau', tc: '#C00000', p: 64, pc: '#8B4513' },
+        { name: 'Chambre vétuste', site: 'Paris · Barcelone', count: 96, grav: 'Élevée', gbg: '#FBE9E7', gfg: '#C00000', trend: 'Stable', tc: '#595959', p: 58, pc: '#8B4513' },
+        { name: 'Attente à la réception', site: 'Amsterdam', count: 37, grav: 'Faible', gbg: '#EAF1FA', gfg: '#1F3864', trend: '−9 %', tc: '#0F5132', p: 31, pc: '#2E74B5' },
+        { name: 'Climatisation', site: 'Milan', count: 29, grav: 'Faible', gbg: '#EAF1FA', gfg: '#1F3864', trend: 'Stable', tc: '#595959', p: 24, pc: '#2E74B5' }
+      ],
+      aspects: [
+        { name: 'Emplacement', label: 'Positif', bg: '#E6F2EC', fg: '#0F5132' },
+        { name: 'Bruit', label: 'Négatif', bg: '#FBE9E7', fg: '#C00000' },
+        { name: 'Personnel', label: 'Positif', bg: '#E6F2EC', fg: '#0F5132' },
+        { name: 'Petit-déjeuner', label: 'Neutre', bg: '#F1F3F7', fg: '#595959' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

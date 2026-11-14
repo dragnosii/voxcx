@@ -1,0 +1,11 @@
+.enquete{max-width:520px;margin:0 auto;padding:32px 16px 48px;display:grid;gap:20px}
+.enquete h1{font-size:clamp(28px,7vw,38px)}
+.notes{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+.notes button{aspect-ratio:1;border:1px solid var(--trait);background:var(--velours);border-radius:16px;font-family:var(--f-titre);font-size:26px;font-weight:600;min-height:56px;transition:transform .15s,border-color .2s,background .2s}
+.notes button:hover{border-color:var(--neon)}
+.notes button[aria-pressed="true"]{background:var(--neon);border-color:var(--neon);color:var(--nuit);transform:scale(1.06)}
+.notes-leg{display:flex;justify-content:space-between;color:var(--sourdine);font-size:13px}
+.coche{display:flex;gap:10px;align-items:flex-start;font-size:14px;color:var(--ivoire-2)}
+.coche input{width:20px;height:20px;margin-top:2px;accent-color:var(--neon)}
+.merci{text-align:center;display:grid;gap:14px;justify-items:center;padding-top:24px}
+.merci .rond{width:72px;height:72px;border-radius:50%;display:grid;place-items:center;background:var(--neon);color:var(--nuit);font-size:34px;font-weight:700}

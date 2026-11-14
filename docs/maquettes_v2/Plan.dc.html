@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Plan d'actions</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#0A0C0B;color:#EAF0EC;font-family:'Manrope',system-ui,sans-serif;font-size:15px;line-height:1.5}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes grow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.app{display:flex;flex-wrap:wrap;min-height:1400px;background:#0A0C0B}
+.side{flex:0 0 264px;background:#0F1311;border-right:1px solid #1E2522;padding:28px 20px;display:flex;flex-direction:column;gap:32px}
+.brand{display:flex;align-items:center;gap:12px}
+.brand .mk{flex:0 0 40px;width:40px;height:40px;border-radius:12px;background:#D4FF3A;display:flex;align-items:center;justify-content:center;color:#0A0C0B}
+.brand .nm{font-size:20px;font-weight:800;line-height:1.1}
+.brand .sb{font-size:12px;color:#93A09A}
+.nav{display:flex;flex-direction:column;gap:6px}
+.nav a{display:flex;align-items:center;gap:14px;height:46px;padding:0 14px;border-radius:12px;color:#B7C2BC;font-weight:600;font-size:15px}
+.nav a svg{flex:0 0 20px;width:20px;height:20px}
+.nav a.on{background:rgba(212,255,58,.10);color:#D4FF3A}
+.nav a:hover{background:#171D1A;color:#FFFFFF}
+.nav a.on:hover{background:rgba(212,255,58,.14);color:#D4FF3A}
+.mode{margin-top:auto;background:#151A17;border:1px solid #242B27;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:12px}
+.mode .t{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#93A09A}
+.mode .n{font-size:12px;color:#93A09A;line-height:1.5}
+.seg{display:flex;background:#0A0C0B;border-radius:12px;padding:4px;gap:4px}
+.seg button{flex:1;height:36px;border:0;border-radius:9px;background:transparent;color:#93A09A;font-weight:700;font-size:13px;cursor:pointer}
+.seg button.on{background:#D4FF3A;color:#0A0C0B}
+.main{flex:999 1 640px;min-width:0;padding:36px 44px 56px;display:flex;flex-direction:column;gap:28px}
+.head{display:flex;flex-wrap:wrap;gap:20px;justify-content:space-between;align-items:center}
+.head h1{margin:0;font-size:34px;font-weight:800;line-height:1.15}
+.head p{margin:6px 0 0;color:#93A09A;font-size:15px}
+.btn{display:flex;align-items:center;gap:10px;height:44px;padding:0 20px;border-radius:12px;border:0;background:#D4FF3A;color:#0A0C0B;font-weight:800;font-size:14px;cursor:pointer}
+.btn svg{flex:0 0 18px;width:18px;height:18px}
+.row{display:flex;flex-wrap:wrap;gap:24px;align-items:stretch}
+.card{background:#151A17;border:1px solid #242B27;border-radius:20px;padding:28px;animation:rise .6s both;min-width:0}
+.card h2{margin:0 0 4px;font-size:19px;font-weight:700}
+.card .sub{color:#93A09A;font-size:14px;margin:0 0 22px}
+.lbl{font-size:14px;color:#93A09A;font-weight:600}
+.num{font-size:44px;font-weight:800;line-height:1.05;color:#EAF0EC}
+.num small{font-size:18px;font-weight:600;color:#93A09A;margin-left:4px}
+.pill{display:inline-flex;align-items:center;height:28px;padding:0 12px;border-radius:999px;font-size:13px;font-weight:700}
+.p-ok{background:rgba(91,228,155,.14);color:#5BE49B}
+.p-ko{background:rgba(255,107,107,.14);color:#FF6B6B}
+.p-mid{background:rgba(255,180,84,.14);color:#FFB454}
+.p-info{background:rgba(61,232,240,.12);color:#3DE8F0}
+.p-lime{background:rgba(212,255,58,.14);color:#D4FF3A}
+.note{color:#93A09A;font-size:13px;line-height:1.6}
+.col{flex:1 1 300px;min-width:0;background:#0F1311;border:1px solid #1E2522;border-radius:20px;padding:18px;display:flex;flex-direction:column;gap:14px}
+.col .ct{display:flex;align-items:center;justify-content:space-between;padding:4px 6px 4px;font-weight:800;font-size:15px}
+.ac{background:#151A17;border:1px solid #242B27;border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:12px}
+.ac b{font-size:16px;line-height:1.35}
+.ac .m{display:flex;flex-wrap:wrap;gap:8px 16px;color:#93A09A;font-size:13px}
+.ac .m span{display:inline-flex;align-items:center;gap:6px}
+.sl{display:flex;flex-direction:column;gap:10px;margin-bottom:22px}
+.sl .h{display:flex;justify-content:space-between;font-weight:700}
+.sl .tr{height:8px;border-radius:4px;background:#0F1311;position:relative}
+.sl .tr i{position:absolute;left:0;top:0;bottom:0;border-radius:4px;background:#D4FF3A}
+.sl .tr u{position:absolute;top:-6px;width:20px;height:20px;margin-left:-10px;border-radius:50%;background:#0A0C0B;border:4px solid #D4FF3A}
+.res{flex:1 1 150px;background:#0F1311;border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:4px}
+.jr{display:flex;gap:16px;align-items:center;padding:14px 0;border-top:1px solid #242B27}
+.jr:first-of-type{border-top:0;padding-top:0}
+.jr .d{flex:0 0 150px;color:#93A09A;font-size:13px}
+.jr .w{flex:1;font-weight:600}
+.tt{display:flex;align-items:center;gap:16px;padding:14px 0;border-top:1px solid #242B27}
+.tt:first-of-type{border-top:0;padding-top:0}
+.tt .n{flex:0 0 120px;font-weight:700}
+.tt .z{flex:1;height:44px;border-radius:12px;border:1px dashed #2C3531;display:flex;align-items:center;padding:0 16px;color:#6F7B75;font-size:14px}
+</style>
+</helmet>
+<div class="app">
+
+<aside class="side">
+<div class="brand">
+<div class="mk"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 16l5-6 4 4 7-9"/></svg></div>
+<div><div class="nm">VoxCX</div><div class="sb">Écoute client · IA</div></div>
+</div>
+<nav class="nav" aria-label="Navigation principale">
+<a href="Main.dc.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg><span>Accueil</span></a>
+<a href="Themes.dc.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7l8-4 8 4-8 4-8-4z"/><path d="M4 12l8 4 8-4"/><path d="M4 17l8 4 8-4"/></svg><span>Thèmes</span></a>
+<a href="Assistant.dc.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg><span>Pose ta question</span></a>
+<a href="Predictif.dc.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg><span>Prédictif</span></a>
+<a class="on" href="Plan.dc.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11"/><path d="M3.5 6l1.5 1.5L7 5M3.5 12l1.5 1.5L7 11M3.5 18l1.5 1.5L7 17"/></svg><span>Plan d'actions</span></a>
+</nav>
+<div class="mode">
+<div class="t">Mode IA</div>
+<div class="seg"><button class="on">Local</button><button>En ligne</button></div>
+<div class="n">Local : gratuit, sans Internet. En ligne : Claude, réponses plus riches. Bascule automatique si le réseau tombe.</div>
+</div>
+</aside>
+
+<main class="main">
+<header class="head">
+<div>
+<h1>Plan d'actions</h1>
+<p>L'IA propose, un responsable décide. Tout est enregistré dans un journal.</p>
+</div>
+<button class="btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span>Proposer des actions</span></button>
+</header>
+
+<section class="row">
+<div class="col">
+<div class="ct"><span>À valider</span><span class="pill p-mid">2</span></div>
+<div class="ac"><b>Plan de rénovation et contrôle qualité des chambres</b><div class="m"><span>Kenzi Solazur</span><span>Direction technique</span><span>T+3 mois</span><span>180 000 DH</span></div><span class="pill p-ko" style="align-self:flex-start">Priorité 100 · Chambre et literie</span></div>
+<div class="ac"><b>Audit de propreté inopiné et checklist des étages</b><div class="m"><span>Kenzi Europa</span><span>Gouvernante générale</span><span>T+1 mois</span><span>60 000 DH</span></div><span class="pill p-info" style="align-self:flex-start">Priorité 26 · Propreté</span></div>
+</div>
+<div class="col">
+<div class="ct"><span>En cours</span><span class="pill p-info">1</span></div>
+<div class="ac"><b>Formation accueil et gestion des réclamations</b><div class="m"><span>Tous les hôtels</span><span>Ressources humaines</span><span>T+2 mois</span><span>60 000 DH</span></div><span class="pill p-mid" style="align-self:flex-start">Priorité 64 · Personnel et service</span></div>
+</div>
+<div class="col">
+<div class="ct"><span>Terminé</span><span class="pill p-ok">1</span></div>
+<div class="ac"><b>Réponse à tous les avis sous 48 heures</b><div class="m"><span>Tous les hôtels</span><span>Responsables de site</span><span>0 DH</span></div><span class="pill p-ok" style="align-self:flex-start">Validée et appliquée</span></div>
+</div>
+</section>
+<p class="note" style="margin:-8px 0 0">Actions d'exemple générées à partir des priorités de l'écran « Thèmes ». Effort et coûts à ajuster avec les directions concernées.</p>
+
+<section class="row">
+<div class="card" style="flex:6 1 460px;animation-delay:.1s">
+<h2>Et si on corrigeait ce problème ?</h2>
+<p class="sub">Simulation sur le sujet « Chambre et literie »</p>
+<div class="sl"><div class="h"><span>Part des commentaires négatifs corrigés</span><span style="color:#D4FF3A">50 %</span></div><div class="tr"><i style="width:50%"></i><u style="left:50%"></u></div></div>
+<div class="sl"><div class="h"><span>Coût de l'action</span><span style="color:#D4FF3A">180 000 DH</span></div><div class="tr"><i style="width:36%"></i><u style="left:36%"></u></div></div>
+<div style="display:flex;flex-wrap:wrap;gap:14px">
+<div class="res"><span class="num" style="color:#5BE49B">+0,027</span><span class="note">étoile sur la note moyenne</span></div>
+<div class="res"><span class="num">92</span><span class="note">commentaires négatifs évités</span></div>
+<div class="res"><span class="num" style="font-size:34px">1 957</span><span class="note">DH par commentaire négatif évité</span></div>
+</div>
+<p class="note" style="margin:16px 0 0">Estimation fondée sur le lien observé entre commentaires négatifs et note : une corrélation, pas une certitude.</p>
+</div>
+
+<div class="card" style="flex:6 1 460px;animation-delay:.17s">
+<h2>L'outil fait-il gagner du temps ?</h2>
+<p class="sub">Chaque testeur analyse 100 avis à la main, puis avec VoxCX. Saisissez les temps relevés.</p>
+<div class="tt"><span class="n">Testeur 1</span><span class="z">À la main : … min</span><span class="z">Avec l'outil : … min</span></div>
+<div class="tt"><span class="n">Testeur 2</span><span class="z">À la main : … min</span><span class="z">Avec l'outil : … min</span></div>
+<div class="tt"><span class="n">Testeur 3</span><span class="z">À la main : … min</span><span class="z">Avec l'outil : … min</span></div>
+<p class="note" style="margin:16px 0 0">Aucune valeur n'est inventée : les chiffres de cette carte viendront de la vraie expérience, à citer dans le rapport.</p>
+</div>
+</section>
+
+<section class="card" style="animation-delay:.24s">
+<h2>Journal de gouvernance de l'IA</h2>
+<p class="sub">Qui a proposé, qui a décidé, et quand (exemples)</p>
+<div class="jr"><span class="d">17/10/2026 08:00</span><span class="w">Briefing de la semaine généré à partir de 3 424 avis</span><span class="pill p-info">IA</span></div>
+<div class="jr"><span class="d">17/10/2026 09:12</span><span class="w">Briefing validé sans modification</span><span class="pill p-ok">Humain</span></div>
+<div class="jr"><span class="d">17/10/2026 09:40</span><span class="w">Action proposée : plan de rénovation des chambres</span><span class="pill p-info">IA</span></div>
+<div class="jr"><span class="d">17/10/2026 10:05</span><span class="w">Action refusée : budget insuffisant ce trimestre</span><span class="pill p-ok">Humain</span></div>
+</section>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1400}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>
