@@ -6,6 +6,9 @@ import sys
 import tempfile
 import time
 
+# Les tests ne dépensent jamais de crédit d'IA : clés vidées (le .env ne les écrase pas).
+os.environ["OPENROUTER_API_KEY"] = ""
+os.environ["ANTHROPIC_API_KEY"] = ""
 dossier = tempfile.mkdtemp(prefix="voxcx_test_")
 import plateforme.config as cfg  # noqa: E402
 

@@ -75,6 +75,19 @@ def en_ligne():
     return bool(cle_openrouter() or cle_ia())
 
 
+def corps_requete(consigne, contenu, max_tokens):
+    niveau = NIVEAUX_IA[niveau_actuel()]
+    corps = {"model": modele_actuel(), "max_tokens": max_tokens,
+             "messages": [{"role": "system", "content": consigne}, {"role": "user", "content": contenu}]}
+    if niveau.get("sans_reflexion"):
+        # Sans cela, DeepSeek épuise max_tokens à « réfléchir » et renvoie un texte vide.
+        # (Sonnet, lui, impose sa réflexion : on ne touche pas au réglage pour les autres niveaux.)
+        corps["reasoning"] = {"enabled": False}
+    else:
+        corps["max_tokens"] = max_tokens + 800  # marge pour la réflexion obligatoire de certains modèles
+    return corps
+
+
 def claude(consigne, contenu, max_tokens=600):
     """Appel au modèle en ligne choisi. Lève une exception en cas d'échec (l'appelant bascule en local)."""
     if cle_openrouter():
@@ -83,8 +96,7 @@ def claude(consigne, contenu, max_tokens=600):
         r = httpx.post(
             "https://openrouter.ai/api/v1/chat/completions",
             headers={"Authorization": f"Bearer {cle_openrouter()}", "X-Title": "VoxCX"},
-            json={"model": modele_actuel(), "max_tokens": max_tokens,
-                  "messages": [{"role": "system", "content": consigne}, {"role": "user", "content": contenu}]},
+            json=corps_requete(consigne, contenu, max_tokens),
             timeout=60,
         )
         r.raise_for_status()
